@@ -83,7 +83,6 @@
     "Acebott.Four_bit_key|block": "读取 %dir 按键",
     "Acebott.joystick|block": "读取摇杆值 %dir ",
     "Acebott.Vibrating_machine|block": "震动电机 %condition",
-    "Acebott.ColorSelection.All|block": "任意颜色",
 
     "{id:category}Acebott": "Acebott",
     "{id:group}130 DC Motor": "130直流电机",
