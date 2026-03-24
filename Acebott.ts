@@ -14,13 +14,29 @@ enum AnalogReadPin{
     P2 = 2
 }
 
+enum _rockerpin {
+    //% block="Xpin"
+    Xpin = 0,
+    //% block="Ypin"
+    Ypin = 1
+}
+
 enum AnalogWritePin{
     //% block="P0"
     P0 = 0,
     //% block="P1"
     P1 = 1,
     //% block="P2"
-    P2 = 2
+    P2 = 2,
+
+    //% block="P3"
+    P3 = 3,
+    //% block="P4"
+    P4 = 4,
+    //% block="P10"
+    P10 = 10
+
+
 }
 
 enum UARTPin{
@@ -569,6 +585,29 @@ namespace Acebott{
 
        pins.servoWritePin(port, degree)
    }
+
+    // Relay @start
+    //% blockId=setRelay block="Relay at %pin| set %status"
+    //% weight=70
+    //% subcategory="Executive"
+    //% group="Relay"
+    export function setRelay(pin: DigitalWritePin, status: SwitchStatus): void {
+        let port = getDigitalPin(pin)
+        pins.digitalWritePin(port, status)
+    }
+    // Relay @end
+
+    // RGB @start
+    //% blockId=setRGB block="RGB at %pin| set brightness %v"
+    //% weight=70
+    //% v.min=0 v.max=255 v.defl=50
+    //% group="RGB LED"
+    //% subcategory="Display"
+    export function setRGB(pin: AnalogWritePin, v: number): void {
+        let port = getAnalogPin(pin)
+        pins.analogWritePin(port, v * 4.01)
+    }
+    // RGB @end
 
     // RGB OnBoard @start
     //% blockId=RGB_OnBoard block="RGB on board |%index|show(R:|%red|G:|%green|B:|%blue|)"
@@ -1226,6 +1265,75 @@ namespace Acebott{
     export function SoundSensor(pin: AnalogReadPin): number {
       let port = getAnalogPin(pin)
       return pins.analogReadPin(port)
+    }
+
+    //% blockId=obstacle block="Infrared obstacle at %pin get value"
+    //% weight=70
+    //% group="infrared bostacle avoidance"
+    //% subcategory="Sensor"
+    export function Infraredobstacle(pin: DigitalPin): number {
+        return pins.digitalReadPin(pin)
+    }
+
+    //% blockId=Tilt block="Tilt Sensor at %pin get value"
+    //% weight=70
+    //% group="Tilt Sensor"
+    //% subcategory="Sensor"
+    export function TiltSensor(pin: DigitalPin): number {
+        return pins.digitalReadPin(pin)
+    }
+
+    //% blockId=sensor_temperature block="Pin %pin reads the analog value of the LM35"  group="LM35温度传感器"
+    //% weight=70
+    //% inlineInputMode=inline
+    //% subcategory="Sensor"
+    export function sensor_temperature(pin: AnalogPin): number {
+        let temp = (pins.analogReadPin(pin) / 1023) * 3.3 * 100;
+        return Math.round(temp * 100) / 100;
+    }
+
+    //% blockId=actuator_buzzer1 block="actuator_buzzer1 pin %pin|freq %freq"   group="无源蜂鸣器"
+    //% weight=70
+    //% subcategory="Executive"
+    export function actuator_buzzer1(pin: AnalogPin, freq: number): void {
+        pins.analogWritePin(pin, freq)
+    }
+
+    let Xpin = 0
+    let Ypin = 0
+    let Bpin = 0
+
+    //% blockId=rockerPin block="rockerPin setup | pinX %pinx|pinY %piny|pinB %pinb" group="摇杆模块"
+    //% weight=70
+    //% subcategory="Sensor"
+    export function rockerPin(pinx: AnalogPin, piny: AnalogPin, pinb: DigitalPin): void {
+        Xpin = pinx
+        Ypin = piny
+        Bpin = pinb
+    }
+
+    //% blockId=_analogRead block="select analog pin  %selectpin" group="摇杆模块"
+    //% weight=69
+    //% subcategory="Sensor"
+    export function _analogRead(selectpin: _rockerpin): number {
+        let a
+        if (selectpin == 0)
+            a = Xpin
+        else if (selectpin == 1)
+            a = Ypin
+        return pins.analogReadPin(a)
+    }
+
+    //% blockId=_digitalRead block="Is the rocker module pressed?" group="摇杆模块"
+    //% weight=68
+    //% subcategory="Sensor"
+    export function _digitalRead(): boolean {
+        // pins.digitalWritePin(Bpin, 0)
+        if (pins.digitalReadPin(Bpin) == 1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -2539,5 +2647,91 @@ namespace Acebott{
         }
     }
     // Microbit controller  @end
-    
+
+    // 颜色传感器相关代码
+    let sugarColorInit = false;
+    let sugarColor: SugarColor;
+
+    // OLED 相关代码
+    let oledInit = false;
+    let oled: AcebottOled;
+
+    function initColor(): void {
+        if (!sugarColorInit) {
+            sugarColor = new SugarColor()
+            sugarColorInit = true
+        }
+    }
+
+    function initOLED(): void {
+        if (!oledInit) {
+            oled = new AcebottOled()
+            oledInit = true
+        }
+    }
+
+    //% blockId=colorUpdate block="color sensor update value"
+    //% subcategory="Sensor"
+    //% group="ColorModules-V2"
+    export function colorUpdate(): void {
+        initColor()
+        sugarColor.update()
+    }
+
+    export enum colorType {
+        //% block="red"
+        Red = 0,
+        //% block="green"
+        Green = 1,
+        //% block="blue"
+        Blue = 2,
+        //% block="hue"
+        Hue = 3,
+    }
+
+    //% blockId=colorValue block="color sensor get %type value"
+    //% subcategory="Sensor"
+    //% group="ColorModules-V2"
+    export function colorValue(type: colorType): number {
+        initColor()
+        sugarColor.update()
+        return sugarColor.getValue(type)
+    }
+
+    //% blockId=oledShowNumber block="OLED show number %num at X %x Y %y"
+    //% subcategory="Display"
+    //% group="OLED12864-1.3inch"
+    //% x.min=0 x.max=127
+    //% y.min=0 y.max=63
+    export function oledShowNumber(num: number, x: number, y: number): void {
+        initOLED()
+        oled.showNumber(x, y, num)
+    }
+
+    //% blockId=oledShowString block="OLED show string %str at X %x Y %y"
+    //% subcategory="Display"
+    //% group="OLED12864-1.3inch"
+    //% x.min=0 x.max=127
+    //% y.min=0 y.max=63
+    export function oledShowString(str: string, x: number, y: number,): void {
+        initOLED()
+        oled.showString(x, y, str)
+    }
+
+    //% blockId=oledClearLine block="OLED clear line at Y %y"
+    //% subcategory="Display"
+    //% group="OLED12864-1.3inch"
+    //% y.min=0 y.max=63
+    export function oledClearLine(y: number): void {
+        initOLED()
+        oled.clearLine(y)
+    }
+
+    //% blockId=oledClear block="OLED clear screen"
+    //% subcategory="Display"
+    //% group="OLED12864-1.3inch"
+    export function oledClear(): void {
+        initOLED()
+        oled.clear()
+    }
 }
