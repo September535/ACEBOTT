@@ -574,7 +574,7 @@ namespace Acebott{
        setPwm(index * 5, 0, value)
    }
 
-   //% blockId=Servo_IO block="Servo|%pin|degree %degree"
+   //% blockId=Servo_IIC block="Servo|%pin|degree %degree"
    //% degree.min=0 degree.max=180
    //% group="Servo"
    //% subcategory="Executive"
@@ -2647,6 +2647,7 @@ namespace Acebott{
         }
     }
     // Microbit controller  @end
+    
 
     // 颜色传感器相关代码
     let sugarColorInit = false;
@@ -2655,6 +2656,10 @@ namespace Acebott{
     // OLED 相关代码
     let oledInit = false;
     let oled: AcebottOled;
+
+    //  舵机相关代码 
+
+    let servoMap: { [key: number]: SugarServo } = {}
 
     function initColor(): void {
         if (!sugarColorInit) {
@@ -2669,6 +2674,38 @@ namespace Acebott{
             oledInit = true
         }
     }
+
+function initServo(pin: ServoPin): SugarServo {
+    if (!servoMap[pin]) {
+
+        let analogPin: AnalogPin
+
+        switch (pin) {
+            case ServoPin.P0: analogPin = AnalogPin.P0; break
+            case ServoPin.P1: analogPin = AnalogPin.P1; break
+            case ServoPin.P2: analogPin = AnalogPin.P2; break
+            case ServoPin.P3: analogPin = AnalogPin.P3; break
+            case ServoPin.P4: analogPin = AnalogPin.P4; break
+            case ServoPin.P5: analogPin = AnalogPin.P5; break
+            case ServoPin.P6: analogPin = AnalogPin.P6; break
+            case ServoPin.P7: analogPin = AnalogPin.P7; break
+            case ServoPin.P8: analogPin = AnalogPin.P8; break
+            case ServoPin.P9: analogPin = AnalogPin.P9; break
+            case ServoPin.P10: analogPin = AnalogPin.P10; break
+            case ServoPin.P11: analogPin = AnalogPin.P11; break
+            case ServoPin.P12: analogPin = AnalogPin.P12; break
+            case ServoPin.P13: analogPin = AnalogPin.P13; break
+            case ServoPin.P14: analogPin = AnalogPin.P14; break
+            case ServoPin.P15: analogPin = AnalogPin.P15; break
+            case ServoPin.P16: analogPin = AnalogPin.P16; break
+            default: analogPin = AnalogPin.P0
+        }
+
+        servoMap[pin] = new SugarServo(analogPin)
+    }
+
+    return servoMap[pin]
+}
 
     //% blockId=colorUpdate block="color sensor update value"
     //% subcategory="Sensor"
@@ -2733,5 +2770,48 @@ namespace Acebott{
     export function oledClear(): void {
         initOLED()
         oled.clear()
+    }
+
+    export enum ServoDirection {
+        //% block="forward"
+        Forward = 1,
+        //% block="reverse"
+        Reverse = -1
+    }
+//% blockId=servoRunDir block="servo %pin run %direction speed %speed"
+    //% subcategory="Actuator"
+    //% group="Servo"
+    //% speed.min=0 speed.max=100
+    export function servoRunDir(pin: ServoPin, direction: ServoDirection, speed: number): void {
+        let s = initServo(pin)
+
+        if (speed < 0) speed = 0
+        if (speed > 100) speed = 100
+
+        let finalSpeed = speed * direction
+
+        s.run(finalSpeed)
+    }
+
+    //% blockId=servoStop block="servo %pin stop"
+    //% subcategory="Actuator"
+    //% group="Servo"
+    export function servoStop(pin: ServoPin): void {
+        let s = initServo(pin)
+        s.stop()
+    }
+
+    //% blockId=servoAngle block="servo %pin set angle %angle°"
+    //% subcategory="Actuator"
+    //% group="Servo"
+    //% angle=protractorPicker
+    //% angle.defl=90
+    export function servoAngle(pin: ServoPin, angle: number): void {
+        initServo(pin)
+
+        if (angle < 0) angle = 0
+        if (angle > 180) angle = 180
+
+        pins.servoWritePin(pin as any, angle)
     }
 }

@@ -11,14 +11,15 @@
         "Acebott.ts",
         "_locales/zh/Acebott-strings.json",
         "AcebottColor.ts",
-        "AcebottOled.ts"
+        "AcebottOled.ts",
+        "AcebottServo.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "public": true,
     "targetVersions": {
-        "target": "8.0.18",
+        "target": "8.0.21",
         "targetId": "microbit"
     },
     "supportedTargets": [
