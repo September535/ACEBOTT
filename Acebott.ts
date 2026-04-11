@@ -2715,12 +2715,6 @@ namespace Acebott {
     //  舵机相关代码 
     let servoMap: { [key: number]: SugarServo } = {}
 
-    function initColor(): void {
-        if (!sugarColorInit) {
-            sugarColor = new SugarColor()
-            sugarColorInit = true
-        }
-    }
 
     function initOLED(): void {
         if (!oledInit) {
@@ -2735,32 +2729,48 @@ namespace Acebott {
             bmp280Init = true
         }
     }
-    /*    // % blockId=colorUpdate block="color sensor update value"
-        // % subcategory="Sensor"
-        // % group="ColorModules-V2"   */
-    export function colorUpdate(): void {
-        initColor()
-        sugarColor.update()
+
+    function initColor(): void {
+        if (!sugarColorInit) {
+            sugarColor = new SugarColor()
+            sugarColorInit = true
+        }
     }
 
-    export enum colorType {
-        //% block="red"
+    // RGB通道选择枚举
+    export enum RGBChannel {
+        //% block="R"
         Red = 0,
-        //% block="green"
+        //% block="G"
         Green = 1,
-        //% block="blue"
-        Blue = 2,
-        //% block="hue"
-        Hue = 3,
+        //% block="B"
+        Blue = 2
     }
 
-    //% blockId=colorValue block="color sensor get %type value"
+    //% blockId=colorDetect block="color sensor detect color"
     //% subcategory="Sensor"
     //% group="ColorModules-V2"
-    export function colorValue(type: colorType): number {
+    export function colorDetect(): string {
+        initColor()
+        return sugarColor.detectColor()
+    }
+
+    //% blockId=getRGBValue block="get %channel value"
+    //% subcategory="Sensor"
+    //% group="ColorModules-V2"
+    export function getRGBValue(channel: RGBChannel): number {
         initColor()
         sugarColor.update()
-        return sugarColor.getValue(type)
+        switch (channel) {
+            case RGBChannel.Red:
+                return sugarColor.red
+            case RGBChannel.Green:
+                return sugarColor.green
+            case RGBChannel.Blue:
+                return sugarColor.blue
+            default:
+                return 0
+        }
     }
 
     //% blockId=oledShowNumber block="OLED show number %num at X %x Y %y"
