@@ -133,7 +133,47 @@ class SugarColor {
         return this.red
     }
 
-    // 新增：颜色识别方法
+    // 获取当前识别的颜色名称
+    getDetectedColor(): string {
+        this.update()
+
+        let redRaw = this.red
+        let greenRaw = this.green
+        let blueRaw = this.blue
+
+        // 颜色识别对比 - 修正为正确的西班牙语
+        if (redRaw > 240 && blueRaw < 120 && greenRaw < 160) {
+            return "Rojo"        // 红色
+        } else if (redRaw < 100 && blueRaw < 200 && greenRaw > 100) {
+            return "Verde"       // 绿色 (修正)
+        } else if (redRaw < 100 && blueRaw > 240 && greenRaw < 200) {
+            return "Azul"        // 蓝色 (修正)
+        } else if (redRaw > 140 && greenRaw > 140 && blueRaw < 140) {
+            return "Amarillo"    // 黄色
+        } else if (redRaw > 180 && blueRaw > 180 && greenRaw < 180) {
+            return "Púrpura"     // 紫色 (修正)
+        } else if (greenRaw > 180 && blueRaw > 180 && redRaw < 180) {
+            return "Cian"        // 青色 (修正)
+        } else if (redRaw > 250 && greenRaw > 250 && blueRaw > 250) {
+            return "Blanco"      // 白色
+        } else if (redRaw < 50 && greenRaw < 50 && blueRaw < 50) {
+            return "Negro"       // 黑色
+        } else {
+            return "Desconocido" // 未知
+        }
+    }
+
+    // 检查是否是指定颜色（返回 1 或 0）
+    checkColor(targetColor: string): number {
+        let detectedColor = this.getDetectedColor()
+        if (detectedColor == targetColor) {
+            return 1
+        } else {
+            return 0
+        }
+    }
+
+    // 颜色识别方法（打印格式）
     detectColor(): string {
         this.update()
 
@@ -143,36 +183,27 @@ class SugarColor {
 
         let colorName = ""
 
-        // 颜色识别对比
+        // 颜色识别对比 - 修正为正确的西班牙语
         if (redRaw > 240 && blueRaw < 120 && greenRaw < 160) {
-            colorName = "red"//colorName = "Rojo"
+            colorName = "Rojo"
         } else if (redRaw < 100 && blueRaw < 200 && greenRaw > 100) {
-            colorName = "green"//colorName = "Verde"
-        } else if (redRaw < 100 && blueRaw > 240 && greenRaw < 210) {
-            colorName = "blue"//colorName = "Azul"
+            colorName = "Verde"      // 修正
+        } else if (redRaw < 100 && blueRaw > 240 && greenRaw < 200) {
+            colorName = "Azul"       // 修正
         } else if (redRaw > 140 && greenRaw > 140 && blueRaw < 140) {
-            colorName = "yellow"//colorName = "Amarillo"
+            colorName = "Amarillo"
         } else if (redRaw > 180 && blueRaw > 180 && greenRaw < 180) {
-            colorName = "purple"//colorName = "Púrpura"
-        } else if (greenRaw > 200 && blueRaw > 180 && redRaw < 180) {
-            colorName = "cyan"//colorName = "Cyan"
+            colorName = "Púrpura"    // 修正
+        } else if (greenRaw > 180 && blueRaw > 180 && redRaw < 180) {
+            colorName = "Cian"       // 修正
         } else if (redRaw > 250 && greenRaw > 250 && blueRaw > 250) {
-            colorName = "White"//colorName = "Blanco"
+            colorName = "Blanco"
         } else if (redRaw < 50 && greenRaw < 50 && blueRaw < 50) {
-            colorName = "Black"//colorName = "Negro"
+            colorName = "Negro"
         } else {
-            colorName = "unknown"//colorName = "Desconocido"
+            colorName = "Desconocido"
         }
 
-        // 打印格式：Rojo(R-240, G-15, B-20)
-        serial.writeString(colorName)
-        serial.writeString("(R-")
-        serial.writeNumber(redRaw)
-        serial.writeString(", G-")
-        serial.writeNumber(greenRaw)
-        serial.writeString(", B-")
-        serial.writeNumber(blueRaw)
-        serial.writeLine(")")
-        return colorName
+        return colorName + "(R-" + redRaw + ", G-" + greenRaw + ", B-" + blueRaw + ")"
     }
 }
