@@ -13,7 +13,8 @@
         "AcebottColor.ts",
         "AcebottOled.ts",
         "AcebottServo.ts",
-        "AcebottBMP280.ts"
+        "AcebottBMP280.ts",
+        "AcebottADC7828.ts"
     ],
     "testFiles": [
         "test.ts"

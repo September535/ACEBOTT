@@ -2679,6 +2679,10 @@ namespace Acebott {
     let bmp280Init = false;
     let bmp280: AcebottBMP280;
 
+    // ADC7828 related code
+    let adc7828Init = false;
+    let adc7828: AcebottADC7828;
+
     //  舵机相关代码 
     let servoMap: { [key: number]: SugarServo } = {}
 
@@ -2894,5 +2898,47 @@ namespace Acebott {
             servoMap[pin] = new SugarServo(analogPin)
         }
         return servoMap[pin]
+    }
+
+    export enum ADC7828Channel {
+        //% block="CH0"
+        CH0 = 0,
+        //% block="CH1"
+        CH1 = 1,
+        //% block="CH2"
+        CH2 = 2,
+        //% block="CH3"
+        CH3 = 3,
+        //% block="CH4"
+        CH4 = 4,
+        //% block="CH5"
+        CH5 = 5,
+        //% block="CH6"
+        CH6 = 6,
+        //% block="CH7"
+        CH7 = 7
+    }
+
+    function initADC7828(): void {
+        if (!adc7828Init) {
+            adc7828 = new AcebottADC7828()
+            adc7828Init = true
+        }
+    }
+
+    //% blockId=adc7828ReadChannel block="ADC7828 read channel %channel"
+    //% subcategory="Sensor"
+    //% group="ADC7828 Sensor"
+    export function adc7828ReadChannel(channel: ADC7828Channel): number {
+        initADC7828()
+        return adc7828.readChannel(channel)
+    }
+
+    //% blockId=adc7828SetAddress block="ADC7828 set address %addr"
+    //% subcategory="Sensor"
+    //% group="ADC7828 Sensor"
+    export function adc7828SetAddress(addr: ADC7828_I2C_ADDRESS): void {
+        initADC7828()
+        adc7828.setAddress(addr)
     }
 }
