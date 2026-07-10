@@ -14,7 +14,8 @@
         "AcebottOled.ts",
         "AcebottServo.ts",
         "AcebottBMP280.ts",
-        "AcebottADC7828.ts"
+        "AcebottADC7828.ts",
+        "AcebottMicrobit.ts"
     ],
     "testFiles": [
         "test.ts"
