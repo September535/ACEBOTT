@@ -1,7 +1,7 @@
 {
     "name": "Acebott",
     "version": "0.0.1",
-    "description": "Acebott extension for micro:bit",
+    "description": "MakeCode extension collection for BBC micro:bit and ACEBOTT hardware modules.",
     "license": "MIT",
     "dependencies": {
         "core": "*"
