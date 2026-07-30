@@ -1,5 +1,5 @@
 {
-    "name": "Acebott",
+    "name": "acebott",
     "version": "0.0.1",
     "description": "MakeCode extension collection for BBC micro:bit and ACEBOTT hardware modules.",
     "license": "MIT",
@@ -9,6 +9,11 @@
     "files": [
         "README.md",
         "Acebott.ts",
+        "AcebottBackground.ts",
+        "AcebottLcd1602.ts",
+        "AcebottAdvanced.ts",
+        "_locales/Acebott-strings.json",
+        "_locales/Acebott-jsdoc-strings.json",
         "_locales/zh/Acebott-strings.json",
         "AcebottColor.ts",
         "AcebottOled.ts",
@@ -28,6 +33,5 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "tsprj",
-    "icon": "https://github.com/ACEBOTTteam/pxt-acebott/blob/main/icon_1.png"
+    "preferredEditor": "tsprj"
 }

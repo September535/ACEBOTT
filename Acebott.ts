@@ -1,8 +1,8 @@
 enum SwitchStatus {
     //% block="ON"
-    ON = 1,
+    On = 1,
     //% block="OFF"
-    OFF = 0
+    Off = 0
 }
 
 enum AnalogReadPin {
@@ -14,11 +14,11 @@ enum AnalogReadPin {
     P2 = 2
 }
 
-enum _rockerpin {
+enum RockerPinAxis {
     //% block="Xpin"
-    Xpin = 0,
+    X = 0,
     //% block="Ypin"
-    Ypin = 1
+    Y = 1
 }
 
 enum AnalogWritePin {
@@ -37,7 +37,7 @@ enum AnalogWritePin {
     P10 = 10
 }
 
-enum UARTPin {
+enum UartPin {
     //% block="P0"
     P0 = 0,
     //% block="P1"
@@ -151,9 +151,9 @@ enum ServoPin {
 
 enum DistanceUnit {
     //% block="cm"
-    CM = 0,
+    Centimeters = 0,
     //% block="inch"
-    INCH = 1
+    Inches = 1
 }
 
 enum Servos {
@@ -174,12 +174,12 @@ enum Motors {
     M4 = 3
 }
 
-enum DHT11Type {
+enum Dht11Type {
     //% block="temperature(℃)"
-    Temperature_C = 1,
+    Celsius = 1,
 
     //% block="temperature(℉)"
-    Temperature_F = 2,
+    Fahrenheit = 2,
 
     //% block="humidity(0~100)"
     Humidity = 3
@@ -204,13 +204,13 @@ const enum CharIndex {
     C8 = 7
 }
 
-const enum IR_Button {
+const enum IrButton {
     //% block="any"
     Any = -1,
     //% block="▲"
     Up = 0x62,
     //% block=" "
-    Unused_2 = -2,
+    Unused2 = -2,
     //% block="◀"
     Left = 0x22,
     //% block="OK"
@@ -218,38 +218,38 @@ const enum IR_Button {
     //% block="▶"
     Right = 0xc2,
     //% block=" "
-    Unused_3 = -3,
+    Unused3 = -3,
     //% block="▼"
     Down = 0xa8,
     //% block=" "
-    Unused_4 = -4,
+    Unused4 = -4,
     //% block="1"
-    Number_1 = 0x68,
+    Number1 = 0x68,
     //% block="2"
-    Number_2 = 0x98,
+    Number2 = 0x98,
     //% block="3"
-    Number_3 = 0xb0,
+    Number3 = 0xb0,
     //% block="4"
-    Number_4 = 0x30,
+    Number4 = 0x30,
     //% block="5"
-    Number_5 = 0x18,
+    Number5 = 0x18,
     //% block="6"
-    Number_6 = 0x7a,
+    Number6 = 0x7a,
     //% block="7"
-    Number_7 = 0x10,
+    Number7 = 0x10,
     //% block="8"
-    Number_8 = 0x38,
+    Number8 = 0x38,
     //% block="9"
-    Number_9 = 0x5a,
+    Number9 = 0x5a,
     //% block="*"
     Star = 0x42,
     //% block="0"
-    Number_0 = 0x4a,
+    Number0 = 0x4a,
     //% block="#"
     Hash = 0x52,
 }
 
-const enum IR_ButtonAction {
+const enum IrButtonAction {
     //% block="Pressed"
     Pressed = 0,
     //% block="Released"
@@ -260,10 +260,10 @@ const enum IrProtocol {
     //% block="Keyestudio"
     Keyestudio = 0,
     //% block="NEC"
-    NEC = 1,
+    Nec = 1,
 }
 
-const enum Trace_Sensor_Index {
+const enum TraceSensorIndex {
     //% block="R"
     R = 0,
     //% block="M"
@@ -273,159 +273,7 @@ const enum Trace_Sensor_Index {
 
 }
 
-namespace background {
-
-    export enum Thread {
-        Priority = 0,
-        UserCallback = 1,
-    }
-
-    export enum Mode {
-        Repeat,
-        Once,
-    }
-
-    class Executor {
-        _newJobs: Job[] = undefined;
-        _jobsToRemove: number[] = undefined;
-        _pause: number = 100;
-        _type: Thread;
-
-        constructor(type: Thread) {
-            this._type = type;
-            this._newJobs = [];
-            this._jobsToRemove = [];
-            control.runInParallel(() => this.loop());
-        }
-
-        push(task: () => void, delay: number, mode: Mode): number {
-            if (delay > 0 && delay < this._pause && mode === Mode.Repeat) {
-                this._pause = Math.floor(delay);
-            }
-            const job = new Job(task, delay, mode);
-            this._newJobs.push(job);
-            return job.id;
-        }
-
-        cancel(jobId: number) {
-            this._jobsToRemove.push(jobId);
-        }
-
-        loop(): void {
-            const _jobs: Job[] = [];
-
-            let previous = control.millis();
-
-            while (true) {
-                const now = control.millis();
-                const delta = now - previous;
-                previous = now;
-
-                // Add new jobs
-                this._newJobs.forEach(function (job: Job, index: number) {
-                    _jobs.push(job);
-                });
-                this._newJobs = [];
-
-                // Cancel jobs
-                this._jobsToRemove.forEach(function (jobId: number, index: number) {
-                    for (let i = _jobs.length - 1; i >= 0; i--) {
-                        const job = _jobs[i];
-                        if (job.id == jobId) {
-                            _jobs.removeAt(i);
-                            break;
-                        }
-                    }
-                });
-                this._jobsToRemove = []
-
-
-                // Execute all jobs
-                if (this._type === Thread.Priority) {
-                    // newest first
-                    for (let i = _jobs.length - 1; i >= 0; i--) {
-                        if (_jobs[i].run(delta)) {
-                            this._jobsToRemove.push(_jobs[i].id)
-                        }
-                    }
-                } else {
-                    // Execute in order of schedule
-                    for (let i = 0; i < _jobs.length; i++) {
-                        if (_jobs[i].run(delta)) {
-                            this._jobsToRemove.push(_jobs[i].id)
-                        }
-                    }
-                }
-
-                basic.pause(this._pause);
-            }
-        }
-    }
-
-    class Job {
-        id: number;
-        func: () => void;
-        delay: number;
-        remaining: number;
-        mode: Mode;
-
-        constructor(func: () => void, delay: number, mode: Mode) {
-            this.id = randint(0, 2147483647)
-            this.func = func;
-            this.delay = delay;
-            this.remaining = delay;
-            this.mode = mode;
-        }
-
-        run(delta: number): boolean {
-            if (delta <= 0) {
-                return false;
-            }
-
-            this.remaining -= delta;
-            if (this.remaining > 0) {
-                return false;
-            }
-
-            switch (this.mode) {
-                case Mode.Once:
-                    this.func();
-                    basic.pause(0);
-                    return true;
-                case Mode.Repeat:
-                    this.func();
-                    this.remaining = this.delay;
-                    basic.pause(0);
-                    return false;
-            }
-        }
-    }
-
-    const queues: Executor[] = [];
-
-    export function schedule(
-        func: () => void,
-        type: Thread,
-        mode: Mode,
-        delay: number,
-    ): number {
-        if (!func || delay < 0) return 0;
-
-        if (!queues[type]) {
-            queues[type] = new Executor(type);
-        }
-
-        return queues[type].push(func, delay, mode);
-    }
-
-    export function remove(type: Thread, jobId: number): void {
-        if (queues[type]) {
-            queues[type].cancel(jobId);
-        }
-    }
-}
-
-//% icon="icon_1.png"
+//% color="#0B3D91" weight=100 icon="\uf1b9"
 namespace Acebott {
     const PCA9685_ADDRESS = 0x40
     const MODE1 = 0x00
@@ -531,13 +379,13 @@ namespace Acebott {
     }
     // LED @end
 
-    //% blockId=ledMatrixShowHex block="LED Matrix show Hex number %hex_num"
+    //% blockId=ledMatrixShowHex block="LED Matrix show Hex number %hexNumber"
     //% subcategory="Display"
     //% group="LED Matrix Modules"
-    export function ledMatrixShowHex(hex_num: number): void {
+    export function ledMatrixShowHex(hexNumber: number): void {
         for (let i = 0; i < 25; i += 5) {
             for (let j = 0; j < 5; j++) {
-                if ((hex_num >> (i + j)) & 1) {
+                if ((hexNumber >> (i + j)) & 1) {
                     led.plot(j, i / 5);
                 }
                 else {
@@ -556,7 +404,7 @@ namespace Acebott {
     //% degree.min=0 degree.max=180
     //% group="Servo Modules"
     //% subcategory="Executive"
-    export function Servo_IIC(index: Servos, degree: number): void {
+    export function servoIic(index: Servos, degree: number): void {
         if (!initialized) {
             initPCA9685()
         }
@@ -569,7 +417,7 @@ namespace Acebott {
     //% degree.min=0 degree.max=180
     //% group="Servo Modules"
     //% subcategory="Executive"
-    export function Servo_IO(pin: ServoPin, degree: number): void {
+    export function servoIo(pin: ServoPin, degree: number): void {
         let port = getAnalogPin(pin)
         if (degree > 180) degree = 180
         if (degree < 0) degree = 0
@@ -580,9 +428,9 @@ namespace Acebott {
 
     export enum ServoDirection {
         //% block="counterclockwise"
-        counterclockwise = 1,
+        Counterclockwise = 1,
         //% block="clockwise"
-        clockwise = -1
+        Clockwise = -1
     }
 
     //% blockId=servoRunDir block="360° Servo %pin run %direction speed %speed"
@@ -628,7 +476,7 @@ namespace Acebott {
     //% bValue.min=0 bValue.max=255 bValue.defl=255
     //% group="RGB LED Modules"
     //% subcategory="Display"
-    export function setRGB(
+    export function setRgb(
         rPin: AnalogWritePin,
         gPin: AnalogWritePin,
         bPin: AnalogWritePin,
@@ -652,7 +500,7 @@ namespace Acebott {
     //% speed.min=-255 speed.max=255
     //% group="DC Motor Modules"
     //% subcategory="Executive"
-    export function dc_motor_run(index: Motors, speed: number): void {
+    export function dcMotorRun(index: Motors, speed: number): void {
         if (!initialized) {
             initPCA9685()
         }
@@ -1026,7 +874,7 @@ namespace Acebott {
     //% name.defl="1"
     //% subcategory="Display"
     //% group="4-Digit Tube Modules"
-    export function tm1650_displayOff(name: string = "1"): void {
+    export function tm1650DisplayOff(name: string = "1"): void {
         let index: number = findInstanceIndex(name)
         instances[index].displayOff()
     }
@@ -1035,7 +883,7 @@ namespace Acebott {
     //% name.defl="1" s.defl="Ace"
     //% subcategory="Display"
     //% group="4-Digit Tube Modules"
-    export function tm1650_showString(name: string = "1", s: string = "Ace"): void {
+    export function tm1650ShowString(name: string = "1", s: string = "Ace"): void {
         let index: number = findInstanceIndex(name)
         instances[index].showString(s)
     }
@@ -1045,7 +893,7 @@ namespace Acebott {
     //% n.min=-999 n.max=9999 n.defl=0
     //% subcategory="Display"
     //% group="4-Digit Tube Modules"
-    export function tm1650_showDecimal(name: string = "1", n: number = 0): void {
+    export function tm1650ShowDecimal(name: string = "1", n: number = 0): void {
         let index: number = findInstanceIndex(name)
         instances[index].showDecimal(n)
     }
@@ -1054,7 +902,7 @@ namespace Acebott {
     //% name.defl="1" clk.defl=DigitalWritePin. dio.defl=DigitalWritePin.P1
     //% subcategory="Display"
     //% group="4-Digit Tube Modules"
-    export function tm1650_configure(name: string = "1", clk: DigitalWritePin, dio: DigitalWritePin): void {
+    export function tm1650Configure(name: string = "1", clk: DigitalWritePin, dio: DigitalWritePin): void {
         let index: number = 0
         let clkPin = getDigitalPin(clk)
         let dioPin = getDigitalPin(dio)
@@ -1072,164 +920,6 @@ namespace Acebott {
     }
     // 4-Digital Tube @end
 
-    // LCD1602 @start
-    let i2cAddr: number // 0x27: PCF8574
-    let BK: number      // backlight control
-    let RS: number      // command/data
-    let Custom_Char: number[][] = []
-
-    // set LCD reg
-    function setreg(d: number) {
-        pins.i2cWriteNumber(i2cAddr, d, NumberFormat.Int8LE)
-        basic.pause(1)
-    }
-
-    // send data to I2C bus
-    function set(d: number) {
-        d = d & 0xF0
-        d = d + BK + RS
-        setreg(d)
-        setreg(d + 4)
-        setreg(d)
-    }
-
-    // send command
-    function cmd(d: number) {
-        RS = 0
-        set(d)
-        set(d << 4)
-    }
-
-    // send data
-    function dat(d: number) {
-        RS = 1
-        set(d)
-        set(d << 4)
-    }
-
-    //% blockId="LCD1602_Clear" block="LCD1602 clear screen"
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_Clear(): void {
-        cmd(0x01)
-    }
-
-    //% blockId="LCD1602_shl" block="LCD1602 shift left"
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_shl(): void {
-        cmd(0x18)
-    }
-
-    //% blockId="LCD1602_shr" block="LCD1602 shift right"
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_shr(): void {
-        cmd(0x1C)
-    }
-
-    //% blockId="LCD1602_Makecharacter"
-    //% block="LCD1602 create custom character %char_index|%im"
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_CreateCharacter(char_index: CharIndex, im: Image): void {
-        const customChar = [0, 0, 0, 0, 0, 0, 0, 0];
-        for (let y = 0; y < 8; y++) {
-            for (let x = 0; x < 5; x++) {
-                if (im.pixel(x, y)) {
-                    customChar[y] |= 1 << (4 - x)
-                }
-            }
-        }
-        Custom_Char[char_index] = customChar;
-    }
-
-    //% blockId="LCD1602_Characterpixels"
-    //% block="Custom character"
-    //% imageLiteral=1
-    //% imageLiteralColumns=5
-    //% imageLiteralRows=8
-    //% imageLiteralScale=0.6
-    //% shim=images::createImage
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_CharacterPixels(i: string): Image {
-        return <Image><any>i;
-    }
-
-
-    //% blockId="LCD1602_Showchararacter"
-    //% block="LCD1602 at (x:|%x|,y:|%y) show custom character|%char_index"
-    //% x.min=0 x.max=15
-    //% y.min=0 y.max=1
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_Showchararacter(x: number, y: number, char_index: CharIndex): void {
-        let a: number
-        if (y > 0)
-            a = 0xC0
-        else
-            a = 0x80
-        a += x
-        cmd(0x40 | (char_index << 3));
-        for (let y = 0; y < 8; y++) {
-            dat(Custom_Char[char_index][y]);
-        }
-        cmd(a)
-        dat(char_index)
-
-    }
-
-    //% blockId="LCD1602_ShowString" block="LCD1602 at (x:|%x|,y:|%y) show string|%s|"
-    //% x.min=0 x.max=15
-    //% y.min=0 y.max=1
-    //% s.defl="Hello,Acebott!"
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_ShowString(x: number, y: number, s: string): void {
-        let a: number
-
-        if (y > 0)
-            a = 0xC0
-        else
-            a = 0x80
-        a += x
-        cmd(a)
-
-        for (let i = 0; i < s.length; i++) {
-            dat(s.charCodeAt(i))
-        }
-    }
-
-    //% blockId="LCD16202_ShowNumber" block="LCD1602 at (x:|%x|,y:|%y) show number|%n|"
-    //% x.min=0 x.max=15
-    //% y.min=0 y.max=1
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_ShowNumber(x: number, y: number, n: number): void {
-        let s = n.toString()
-        LCD1602_ShowString(x, y, s)
-    }
-
-    //% blockId="LCD1602_Init" block="LCD1602 initialization"
-    //% subcategory="Display"
-    //% group="LCD1602 Modules"
-    export function LCD1602_Init(): void {
-        i2cAddr = 39
-        BK = 8
-        RS = 0
-        cmd(0x33)       // set 4bit mode
-        basic.pause(5)
-        set(0x30)
-        basic.pause(5)
-        set(0x20)
-        basic.pause(5)
-        cmd(0x28)       // set mode
-        cmd(0x0C)
-        cmd(0x06)
-        cmd(0x01)       // clear
-    }
-    // LCD1602 @end
 
     // Laser @start
     //% blockId=setLaser block="Laser at %pin| set %status"
@@ -1243,11 +933,11 @@ namespace Acebott {
     }
     // Laser @end
 
-    //% blockId=Photoresistance block="Photoresistance at %pin get valuev（0~100）"
+    //% blockId=Photoresistance block="photoresistance at %pin get valuev（0~100）"
     //% weight=70
-    //% group="Photoresistance Sensor"
+    //% group="photoresistance Sensor"
     //% subcategory="Sensor"
-    export function Photoresistance(pin: AnalogReadPin): number {
+    export function photoresistance(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         let rawValue = pins.analogReadPin(port)
 
@@ -1255,10 +945,10 @@ namespace Acebott {
         return Math.round(mappedValue)
     }
 
-    //% blockId=Mosisture_Sensor block="Mosisture Sensor at %pin get value"
-    //% group="Mosisture Sensor"
+    //% blockId=Mosisture_Sensor block="moisture Sensor at %pin get value"
+    //% group="moisture Sensor"
     //% subcategory="Sensor"
-    export function Mosisture(pin: AnalogReadPin): number {
+    export function moisture(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         return pins.analogReadPin(port)
     }
@@ -1267,14 +957,14 @@ namespace Acebott {
     //% weight=70
     //% group="PIR Motion Sensor"
     //% subcategory="Sensor"
-    export function PIRMotion(pin: DigitalPin): number {
+    export function pirMotion(pin: DigitalPin): number {
         return pins.digitalReadPin(pin)
     }
 
     //% blockId=Sound_Sensor block="Sound Sensor at %pin get value"
     //% group="Sound Sensor"
     //% subcategory="Sensor"
-    export function SoundSensor(pin: AnalogReadPin): number {
+    export function soundSensor(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         return pins.analogReadPin(port)
     }
@@ -1284,7 +974,7 @@ namespace Acebott {
     //% weight=70
     //% group="Infrared Obstacle Avoidance Sensor"
     //% subcategory="Sensor"
-    export function Infraredobstacle(pin: DigitalPin): number {
+    export function infraredObstacle(pin: DigitalPin): number {
         return pins.digitalReadPin(pin)
     }
 
@@ -1293,7 +983,7 @@ namespace Acebott {
     //% weight=70
     //% group="Tilt Sensor"
     //% subcategory="Sensor"
-    export function TiltSensor(pin: DigitalPin): number {
+    export function tiltSensor(pin: DigitalPin): number {
         return pins.digitalReadPin(pin)
     }
 
@@ -1302,7 +992,7 @@ namespace Acebott {
     //% group="LM35 Temperature Sensor"
     //% inlineInputMode=inline
     //% subcategory="Sensor"
-    export function sensor_temperature(pin: AnalogPin): number {
+    export function sensorTemperature(pin: AnalogPin): number {
         let temp = (pins.analogReadPin(pin) / 1023) * 3.3 * 100;
         return Math.round(temp * 100) / 100;
     }
@@ -1311,7 +1001,7 @@ namespace Acebott {
     //% weight=70  buzzer
     //% group="Buzzer Modules"
     //% subcategory="Executive"
-    export function actuator_buzzer1(pin: AnalogPin, freq: number): void {
+    export function actuatorBuzzer(pin: AnalogPin, freq: number): void {
         pins.analogWritePin(pin, freq)
     }
 
@@ -1319,25 +1009,25 @@ namespace Acebott {
     let Ypin = 0
     let Bpin = 0
 
-    //% blockId=rockerPin block="RockerPin setup | pinX %pinx|pinY %piny|pinB %pinb" 
+    //% blockId=rockerPin block="RockerPin setup | pinX %xPin|pinY %yPin|pinB %buttonPin"
     //% weight=70
     //% group="Joystick Sensor"
     //% subcategory="Sensor"
-    export function rockerPin(pinx: AnalogPin, piny: AnalogPin, pinb: DigitalPin): void {
-        Xpin = pinx
-        Ypin = piny
-        Bpin = pinb
+    export function rockerPin(xPin: AnalogPin, yPin: AnalogPin, buttonPin: DigitalPin): void {
+        Xpin = xPin
+        Ypin = yPin
+        Bpin = buttonPin
     }
 
-    //% blockId=_analogRead block="Select analog pin  %selectpin"
+    //% blockId=_analogRead block="Select analog pin  %axis"
     //% weight=69
     //% group="Joystick Sensor"
     //% subcategory="Sensor"
-    export function _analogRead(selectpin: _rockerpin): number {
+    export function rockerAnalogRead(axis: RockerPinAxis): number {
         let a
-        if (selectpin == 0)
+        if (axis == 0)
             a = Xpin
-        else if (selectpin == 1)
+        else if (axis == 1)
             a = Ypin
         return pins.analogReadPin(a)
     }
@@ -1346,7 +1036,7 @@ namespace Acebott {
     //% weight=68
     //% group="Joystick Sensor"
     //% subcategory="Sensor"
-    export function _digitalRead(): boolean {
+    export function rockerButtonPressed(): boolean {
         // pins.digitalWritePin(Bpin, 0)
         if (pins.digitalReadPin(Bpin) == 1) {
             return false;
@@ -1357,23 +1047,23 @@ namespace Acebott {
 
     /**
      *
-     * @param _INA  ina eg: AnalogPin.P1
-     * @param _INB  inb eg: AnalogPin.P2
+     * @param inA  ina eg: AnalogPin.P1
+     * @param inB  inb eg: AnalogPin.P2
      * @param turn
      * @param speed
      */
-    //% blockId=actuator_motor_run block="130 DC Motor at IN+ | %_INA | IN- | %_INB | run speed %speed"  group="130 DC Motor"
+    //% blockId=actuator_motor_run block="130 DC Motor at IN+ | %inA | IN- | %inB | run speed %speed"  group="130 DC Motor"
     //% weight=70
     //% inlineInputMode=inline
     //% speed.min=-255 speed.max=255
-    //% _INA.defl=AnalogWritePin.
-    //% _INB.defl=DigitalWritePin.P1
+    //% inA.defl=AnalogWritePin.
+    //% inB.defl=DigitalWritePin.P1
     //% speed.defl=100
     //% group="130 DC Motor Modules"
     //% subcategory="Executive"
-    export function _130_DC_motor_run(_INA: AnalogWritePin, _INB: DigitalWritePin, speed: number): void {
-        let pwmPin = getAnalogPin(_INA)
-        let dirPin = getDigitalPin(_INB)
+    export function dcMotor130Run(inA: AnalogWritePin, inB: DigitalWritePin, speed: number): void {
+        let pwmPin = getAnalogPin(inA)
+        let dirPin = getDigitalPin(inB)
         speed = speed * 4; // map 256 to 1024
 
         if (speed >= 0) {
@@ -1394,7 +1084,7 @@ namespace Acebott {
     //% trig.defl=DigitalWritePin.P1
     //% group="Ultrasonic Sensor"
     //% subcategory="Sensor"
-    export function UltrasonicDistance(echo: DigitalPin, trig: DigitalWritePin, unit: DistanceUnit): number {
+    export function ultrasonicDistance(echo: DigitalPin, trig: DigitalWritePin, unit: DistanceUnit): number {
         let trigPin = getDigitalPin(trig)
         // send pulse
         pins.setPull(trigPin, PinPullMode.PullNone)
@@ -1443,10 +1133,10 @@ namespace Acebott {
     let dht11Temperature = 0
     let startTime = 0
 
-    //% blockId="DHT11_getvalue" block="Temperature and Humidity Sensor at|%pin| get value|%data_type"
+    //% blockId="DHT11_getvalue" block="Temperature and Humidity Sensor at|%pin| get value|%dataType"
     //% group="Temperature and Humidity Sensor"
     //% subcategory="Sensor"
-    export function DHT11_getvalue(pin: DigitalWritePin, data_type: DHT11Type): number {
+    export function dht11Value(pin: DigitalWritePin, dataType: Dht11Type): number {
         const DHT11_TIMEOUT = 100
         const buffer = pins.createBuffer(40)
         const data = [0, 0, 0, 0, 0]
@@ -1502,12 +1192,12 @@ namespace Acebott {
             startTime = control.micros()
         }
 
-        switch (data_type) {
-            case DHT11Type.Temperature_C:
+        switch (dataType) {
+            case Dht11Type.Celsius:
                 return dht11Temperature
-            case DHT11Type.Temperature_F:
+            case Dht11Type.Fahrenheit:
                 return (dht11Temperature * 1.8) + 32
-            case DHT11Type.Humidity:
+            case Dht11Type.Humidity:
                 return dht11Humidity
         }
     }
@@ -1517,7 +1207,7 @@ namespace Acebott {
     //% blockId=RaindropSensor block="Raindrop Sensor at %pin get value"
     //% group="Raindrop Sensor"
     //% subcategory="Sensor"
-    export function RaindropSensor(pin: AnalogReadPin): number {
+    export function raindropSensor(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         return pins.analogReadPin(port)
     }
@@ -1527,7 +1217,7 @@ namespace Acebott {
     //% blockId=MQ4_Sensor block="MQ-4 Sensor at %pin get value"
     //% group="MQ-4 Sensor"
     //% subcategory="Sensor"
-    export function MQ4_Sensor(pin: AnalogReadPin): number {
+    export function mq4Sensor(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         return pins.analogReadPin(port)
     }
@@ -1557,11 +1247,11 @@ namespace Acebott {
         onIrDatagram: () => void;
     }
     class IrButtonHandler {
-        irButton: IR_Button;
+        irButton: IrButton;
         onEvent: () => void;
 
         constructor(
-            irButton: IR_Button,
+            irButton: IrButton,
             onEvent: () => void
         ) {
             this.irButton = irButton;
@@ -1661,13 +1351,13 @@ namespace Acebott {
             if (newCommand !== irState.activeCommand) {
 
                 if (irState.activeCommand >= 0) {
-                    const releasedHandler = irState.onIrButtonReleased.find(h => h.irButton === irState.activeCommand || IR_Button.Any === h.irButton);
+                    const releasedHandler = irState.onIrButtonReleased.find(h => h.irButton === irState.activeCommand || IrButton.Any === h.irButton);
                     if (releasedHandler) {
                         background.schedule(releasedHandler.onEvent, background.Thread.UserCallback, background.Mode.Once, 0);
                     }
                 }
 
-                const pressedHandler = irState.onIrButtonPressed.find(h => h.irButton === newCommand || IR_Button.Any === h.irButton);
+                const pressedHandler = irState.onIrButtonPressed.find(h => h.irButton === newCommand || IrButton.Any === h.irButton);
                 if (pressedHandler) {
                     background.schedule(pressedHandler.onEvent, background.Thread.UserCallback, background.Mode.Once, 0);
                 }
@@ -1706,7 +1396,7 @@ namespace Acebott {
             if (now > irState.repeatTimeout) {
                 // repeat timed out
 
-                const handler = irState.onIrButtonReleased.find(h => h.irButton === irState.activeCommand || IR_Button.Any === h.irButton);
+                const handler = irState.onIrButtonReleased.find(h => h.irButton === irState.activeCommand || IrButton.Any === h.irButton);
                 if (handler) {
                     background.schedule(handler.onEvent, background.Thread.UserCallback, background.Mode.Once, 0);
                 }
@@ -1724,13 +1414,13 @@ namespace Acebott {
     //% button.fieldOptions.tooltips="false"
     //% group="IR Receiver Sensor"
     //% subcategory="Sensor"
-    export function IR_onButton(
-        button: IR_Button,
-        action: IR_ButtonAction,
+    export function irOnButton(
+        button: IrButton,
+        action: IrButtonAction,
         handler: () => void
     ) {
         initIrState();
-        if (action === IR_ButtonAction.Pressed) {
+        if (action === IrButtonAction.Pressed) {
             irState.onIrButtonPressed.push(new IrButtonHandler(button, handler));
         }
         else {
@@ -1746,11 +1436,11 @@ namespace Acebott {
     //% button.fieldOptions.tooltips="false"
     //% group="IR Receiver Sensor"
     //% subcategory="Sensor"
-    export function IR_isDecodeResult(button: IR_Button): boolean {
+    export function irIsDecodeResult(button: IrButton): boolean {
         let d = -1
         basic.pause(0); // Yield to support background processing when called in tight loops
         if (!irState) {
-            d = IR_Button.Any
+            d = IrButton.Any
         } else {
             d = irState.commandSectionBits >> 8
         }
@@ -1761,7 +1451,7 @@ namespace Acebott {
     //% block="IR data is received"
     //% group="IR Receiver Sensor"
     //% subcategory="Sensor"
-    export function IR_isReceived(): boolean {
+    export function irIsReceived(): boolean {
         basic.pause(0); // Yield to support background processing when called in tight loops
         initIrState();
         if (irState.hasNewDatagram) {
@@ -1783,7 +1473,7 @@ namespace Acebott {
     // //% block="IR button code %button"
     // //% group="IR Receiver Sensor"
     // //% subcategory="Sensor"
-    // export function IR_ButtonCode(button: IR_Button): number {
+    // export function IR_ButtonCode(button: IrButton): number {
     //   basic.pause(0); // Yield to support background processing when called in tight loops
     //   return button as number;
     // }
@@ -1809,7 +1499,7 @@ namespace Acebott {
     //% pin.fieldOptions.tooltips="false"
     //% group="IR Receiver Sensor"
     //% subcategory="Sensor"
-    export function IRReceiver_init(pin: DigitalPin): void {
+    export function irReceiverInit(pin: DigitalPin): void {
         initIrState();
 
         if (irState.protocol) {
@@ -2221,7 +1911,7 @@ namespace Acebott {
     //% block="RFID read ID"
     //% group="RFID Sensor"
     //% subcategory="Sensor"
-    export function RFID_getID() {
+    export function rfidId() {
         let id = readID()
         while (!(id)) {
             id = readID()
@@ -2235,7 +1925,7 @@ namespace Acebott {
     //% block="RFID read data"
     //% group="RFID Sensor"
     //% subcategory="Sensor"
-    export function RFID_readData(): string {
+    export function rfidReadData(): string {
         let text = readFromCard()
         while (!text) {
             let text = readFromCard()
@@ -2252,7 +1942,7 @@ namespace Acebott {
     //% text.defl="Acebott"
     //% group="RFID Sensor"
     //% subcategory="Sensor"
-    export function RFID_writeTocard(text: string) {
+    export function rfidWriteToCard(text: string) {
         let id = writeToCard(text)
 
         while (!id) {
@@ -2268,7 +1958,7 @@ namespace Acebott {
     //% block="RFID Module initialization"
     //% group="RFID Sensor"
     //% subcategory="Sensor"
-    export function RFID_init() {
+    export function rfidInit() {
         // reset module
         i2cwrite(MFRC522_ADDRESS, CommandReg, PCD_RESETPHASE)
 
@@ -2292,7 +1982,7 @@ namespace Acebott {
     //% blockId=Trace_Sensor_getValue block="Trace Sensor get value %index"
     //% group="Trace Sensor"
     //% subcategory="Sensor"
-    export function Trace_Sensor_getValue(index: Trace_Sensor_Index): number {
+    export function traceSensorValue(index: TraceSensorIndex): number {
         switch (index) {
             case 0:
                 return pins.analogReadPin(R_PIN)
@@ -2305,16 +1995,16 @@ namespace Acebott {
         }
     }
 
-    //% blockId=Trace_Sensor_init block="Trace Sensor set pin at (R:%rpin, M:|%mpin|, L:|%lpin)"
-    //% rpin.defl=AnalogReadPin.P0
-    //% mpin.defl=AnalogReadPin.P1
-    //% lpin.defl=AnalogReadPin.P2
+    //% blockId=Trace_Sensor_init block="Trace Sensor set pin at (R:%rightPin, M:|%middlePin|, L:|%leftPin)"
+    //% rightPin.defl=AnalogReadPin.P0
+    //% middlePin.defl=AnalogReadPin.P1
+    //% leftPin.defl=AnalogReadPin.P2
     //% group="Trace Sensor"
     //% subcategory="Sensor"
-    export function Trace_Sensor_init(rpin: AnalogReadPin, mpin: AnalogReadPin, lpin: AnalogReadPin): void {
-        R_PIN = getAnalogPin(rpin)
-        M_PIN = getAnalogPin(mpin)
-        L_PIN = getAnalogPin(lpin)
+    export function traceSensorInit(rightPin: AnalogReadPin, middlePin: AnalogReadPin, leftPin: AnalogReadPin): void {
+        R_PIN = getAnalogPin(rightPin)
+        M_PIN = getAnalogPin(middlePin)
+        L_PIN = getAnalogPin(leftPin)
     }
     // Trace Sensor @end
 
@@ -2323,21 +2013,21 @@ namespace Acebott {
 
     let speech_cmd = 0;
 
-    //% block="Speech Recognition getCMD is %cmd_in"
+    //% block="Speech Recognition getCMD is %command"
     //% blockId = Speech_Recognition_getCMD
     //% group="Speech Recognition Sensor"
     //% subcategory="Sensor"
-    export function Speech_Recognition_getCMD(cmd_in: number): boolean {
-        return cmd_in == speech_cmd;
+    export function speechRecognitionCommand(command: number): boolean {
+        return command == speech_cmd;
     }
 
 
     //% blockId="Speech_Recognition_Init" 
-    //% block="Speech Recognition Init TX at %asrTX"
+    //% block="Speech Recognition Init TX at %transmitPin"
     //% group="Speech Recognition Sensor"
     //% subcategory="Sensor"
-    export function Speech_Recognition_Init(asrTX: UARTPin): void {
-        serial.redirect(SerialPin.USB_TX, getUartPin(asrTX), BaudRate.BaudRate115200);
+    export function speechRecognitionInit(transmitPin: UartPin): void {
+        serial.redirect(SerialPin.USB_TX, getUartPin(transmitPin), BaudRate.BaudRate115200);
         basic.forever(function () {
             let list = serial.readBuffer(1).toArray(NumberFormat.UInt8BE);
             speech_cmd = list[0];
@@ -2345,278 +2035,4 @@ namespace Acebott {
     }
     // Speech Recognition @end
 
-    // Color sensor related code
-    let sugarColorInit = false;
-    let sugarColor: SugarColor;
-
-    // OLED 相关代码
-    let oledInit = false;
-    let oled: AcebottOled;
-
-    // BMP280 相关代码
-    let bmp280Init = false;
-    let bmp280: AcebottBMP280;
-
-    // ADC7828 related code
-    let adc7828Init = false;
-    let adc7828: AcebottADC7828;
-
-    //  舵机相关代码 
-    let servoMap: { [key: number]: SugarServo } = {}
-
-
-    function initOLED(): void {
-        if (!oledInit) {
-            oled = new AcebottOled()
-            oledInit = true
-        }
-    }
-
-    function initBMP280(): void {
-        if (!bmp280Init) {
-            bmp280 = new AcebottBMP280()
-            bmp280Init = true
-        }
-    }
-
-    function initColor(): void {
-        if (!sugarColorInit) {
-            sugarColor = new SugarColor()
-            sugarColorInit = true
-        }
-    }
-
-
-    // RGB通道选择枚举
-    export enum RGBChannel {
-        //% block="R"
-        Red = 0,
-        //% block="G"
-        Green = 1,
-        //% block="B"
-        Blue = 2
-    }
-
-    // 颜色选择枚举
-    export enum ColorName {
-        //% block="rojo"
-        Red = 0,
-        //% block="verde"
-        Green = 1,
-        //% block="azul"
-        Blue = 2,
-        //% block="amarillo"
-        Yellow = 3,
-        //% block="púrpura"
-        Purple = 4,
-        //% block="cian"
-        Cyan = 5,
-        //% block="blanco"
-        White = 6,
-        //% block="negro"
-        Black = 7
-    }
-
-    //% blockId=colorDetect block="Color sensor detect color"
-    //% subcategory="Sensor"
-    //% group="Color Sensor -V2"
-    export function colorDetect(): string {
-        initColor()
-        return sugarColor.detectColor()
-    }
-
-    //% blockId=getRGBValue block=" Color sensor get %channel value"
-    //% subcategory="Sensor"
-    //% group="Color Sensor -V2"
-    export function getRGBValue(channel: RGBChannel): number {
-        initColor()
-        sugarColor.update()
-        switch (channel) {
-            case RGBChannel.Red:
-                return sugarColor.red
-            case RGBChannel.Green:
-                return sugarColor.green
-            case RGBChannel.Blue:
-                return sugarColor.blue
-            default:
-                return 0
-        }
-    }
-
-    //% blockId=isColor block="The target is %color"
-    //% subcategory="Sensor"
-    //% group="Color Sensor -V2"
-    //% blockGap=8
-    export function isColor(color: ColorName): boolean {
-        initColor()
-        let colorStr = ""
-        switch (color) {
-            case ColorName.Red:
-                colorStr = "Rojo"
-                break
-            case ColorName.Green:
-                colorStr = "Verde"
-                break
-            case ColorName.Blue:
-                colorStr = "Azul"
-                break
-            case ColorName.Yellow:
-                colorStr = "Amarillo"
-                break
-            case ColorName.Purple:
-                colorStr = "Púrpura"
-                break
-            case ColorName.Cyan:
-                colorStr = "Cian"
-                break
-            case ColorName.White:
-                colorStr = "Blanco"
-                break
-            case ColorName.Black:
-                colorStr = "Negro"
-                break
-        }
-        let result = sugarColor.checkColor(colorStr)
-        let isMatch = result == 1
-        serial.writeLine("" + (isMatch ? "true" : "false"))
-        return isMatch
-    }
-    //% blockId=oledShowNumber block="OLED show number %num at X %x Y %y"
-    //% subcategory="Display"
-    //% group="OLED12864-1.3inch Modules"
-    //% x.min=0 x.max=127
-    //% y.min=0 y.max=63
-    export function oledShowNumber(num: number, x: number, y: number): void {
-        initOLED()
-        oled.showNumber(x, y, num)
-    }
-
-    //% blockId=oledShowString block="OLED show string %str at X %x Y %y"
-    //% subcategory="Display"
-    //% group="OLED12864-1.3inch Modules"
-    //% x.min=0 x.max=127
-    //% y.min=0 y.max=63
-    export function oledShowString(str: string, x: number, y: number,): void {
-        initOLED()
-        oled.showString(x, y, str)
-    }
-
-    //% blockId=oledClearLine block="OLED clear line at Y %y"
-    //% subcategory="Display"
-    //% group="OLED12864-1.3inch Modules"
-    //% y.min=0 y.max=63
-    export function oledClearLine(y: number): void {
-        initOLED()
-        oled.clearLine(y)
-    }
-
-    //% blockId=oledClear block="OLED clear screen"
-    //% subcategory="Display"
-    //% group="OLED12864-1.3inch Modules"
-    export function oledClear(): void {
-        initOLED()
-        oled.clear()
-    }
-
-    // BMP280 相关代码
-
-    //% blockId=bmp280GetTemperature block="BMP280 get temperature (°C)"
-    //% subcategory="Sensor"
-    //% group="Barometric Pressure Sensor"
-    export function bmp280GetTemperature(): number {
-        initBMP280()
-        let temp = bmp280.getTemperatureFloat()
-        // 确保返回两位小数
-        return Math.round(temp * 100) / 100
-    }
-
-    //% blockId=bmp280GetPressure block="BMP280 get pressure (hPa)"
-    //% subcategory="Sensor"
-    //% group="Barometric Pressure Sensor"
-    export function bmp280GetPressure(): number {
-        initBMP280()
-        let pressure = bmp280.getPressureHpa()
-        // 确保返回两位小数
-        return Math.round(pressure * 100) / 100
-    }
-
-    //% blockId=bmp280SetAddress block="BMP280 set address %addr"
-    //% subcategory="Sensor"
-    //% group="Barometric Pressure Sensor"
-    export function bmp280SetAddress(addr: BMP280_I2C_ADDRESS): void {
-        initBMP280()
-        bmp280.setAddress(addr)
-    }
-
-    function initServo(pin: ServoPin): SugarServo {
-        if (!servoMap[pin]) {
-
-            let analogPin: AnalogPin
-
-            switch (pin) {
-                case ServoPin.P0: analogPin = AnalogPin.P0; break
-                case ServoPin.P1: analogPin = AnalogPin.P1; break
-                case ServoPin.P2: analogPin = AnalogPin.P2; break
-                case ServoPin.P3: analogPin = AnalogPin.P3; break
-                case ServoPin.P4: analogPin = AnalogPin.P4; break
-                case ServoPin.P5: analogPin = AnalogPin.P5; break
-                case ServoPin.P6: analogPin = AnalogPin.P6; break
-                case ServoPin.P7: analogPin = AnalogPin.P7; break
-                case ServoPin.P8: analogPin = AnalogPin.P8; break
-                case ServoPin.P9: analogPin = AnalogPin.P9; break
-                case ServoPin.P10: analogPin = AnalogPin.P10; break
-                case ServoPin.P11: analogPin = AnalogPin.P11; break
-                case ServoPin.P12: analogPin = AnalogPin.P12; break
-                case ServoPin.P13: analogPin = AnalogPin.P13; break
-                case ServoPin.P14: analogPin = AnalogPin.P14; break
-                case ServoPin.P15: analogPin = AnalogPin.P15; break
-                case ServoPin.P16: analogPin = AnalogPin.P16; break
-                default: analogPin = AnalogPin.P0
-            }
-            servoMap[pin] = new SugarServo(analogPin)
-        }
-        return servoMap[pin]
-    }
-
-    export enum ADC7828Channel {
-        //% block="CH0"
-        CH0 = 0,
-        //% block="CH1"
-        CH1 = 1,
-        //% block="CH2"
-        CH2 = 2,
-        //% block="CH3"
-        CH3 = 3,
-        //% block="CH4"
-        CH4 = 4,
-        //% block="CH5"
-        CH5 = 5,
-        //% block="CH6"
-        CH6 = 6,
-        //% block="CH7"
-        CH7 = 7
-    }
-
-    function initADC7828(): void {
-        if (!adc7828Init) {
-            adc7828 = new AcebottADC7828()
-            adc7828Init = true
-        }
-    }
-
-    //% blockId=adc7828ReadChannel block="ADC7828 read channel %channel"
-    //% subcategory="Sensor"
-    //% group="ADC7828 Sensor"
-    export function adc7828ReadChannel(channel: ADC7828Channel): number {
-        initADC7828()
-        return adc7828.readChannel(channel)
-    }
-
-    //% blockId=adc7828SetAddress block="ADC7828 set address %addr"
-    //% subcategory="Sensor"
-    //% group="ADC7828 Sensor"
-    export function adc7828SetAddress(addr: ADC7828_I2C_ADDRESS): void {
-        initADC7828()
-        adc7828.setAddress(addr)
-    }
 }
