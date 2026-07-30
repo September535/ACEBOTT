@@ -1,6 +1,6 @@
 {
     "name": "acebott",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "MakeCode extension collection for BBC micro:bit and ACEBOTT hardware modules.",
     "license": "MIT",
     "dependencies": {
@@ -8,6 +8,8 @@
     },
     "files": [
         "README.md",
+        "docs/reference.md",
+        "docs/testing.md",
         "Acebott.ts",
         "AcebottBackground.ts",
         "AcebottLcd1602.ts",
