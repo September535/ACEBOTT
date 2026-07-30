@@ -1,13 +1,13 @@
 // AcebottBMP280.ts
 // BMP280 数字压力传感器类
 
-enum BMP280_I2C_ADDRESS {
-    ADDR_0x76 = 0x76,
-    ADDR_0x77 = 0x77
+enum Bmp280I2cAddress {
+    Address0x76 = 0x76,
+    Address0x77 = 0x77
 }
 
 class AcebottBMP280 {
-    private i2cAddr: number = BMP280_I2C_ADDRESS.ADDR_0x76
+    private i2cAddr: number = Bmp280I2cAddress.Address0x76
     private dig_T1: number = 0
     private dig_T2: number = 0
     private dig_T3: number = 0
@@ -24,7 +24,7 @@ class AcebottBMP280 {
     private pressure: number = 0
     private initialized: boolean = false
 
-    constructor(addr?: BMP280_I2C_ADDRESS) {
+    constructor(addr?: Bmp280I2cAddress) {
         if (addr !== undefined) {
             this.i2cAddr = addr
         }
@@ -135,7 +135,7 @@ class AcebottBMP280 {
     }
 
     // 设置 I2C 地址（会自动重新初始化）
-    setAddress(addr: BMP280_I2C_ADDRESS): void {
+    setAddress(addr: Bmp280I2cAddress): void {
         this.i2cAddr = addr
         this.init()  // 重新初始化
     }

@@ -2,6 +2,6 @@
   "Acebott.Servo": "Servo Execute",
   "Acebott.Servo|param|degree": "[0-180] degree of servo; eg: 0, 90, 180",
   "Acebott.Servo|param|index": "Servo Channel; eg: S1, S2",
-  "Acebott._130_DC_motor_run": "* @param _INA  ina eg: AnalogPin.P1",
-  "Acebott._130_DC_motor_run|param|_INB": "inb eg: AnalogPin.P2"
+  "Acebott.dcMotor130Run": "* @param inA  ina eg: AnalogPin.P1",
+  "Acebott.dcMotor130Run|param|inB": "inb eg: AnalogPin.P2"
 }

@@ -2,13 +2,13 @@
 // Microbit car and controller blocks
 
 namespace Acebott {
-    export enum RGBLights {
+    export enum RgbLights {
         //% blockId="Right_RGB" block="Right"
-        RGB_R = 1,
+        Right = 1,
         //% blockId="Left_RGB" block="Left"
-        RGB_L = 2,
+        Left = 2,
         //% blockId="ALL" block="ALL"
-        ALL = 3
+        All = 3
     }
 
     //% blockId=colorLight block="Set LED %light color $color"
@@ -16,12 +16,12 @@ namespace Acebott {
     //% weight=65
     //% group="Microbit Car"
     //% subcategory="Executive"
-    export function colorLight(light: RGBLights, color: number): void {
+    export function colorLight(light: RgbLights, color: number): void {
         let r: number, g: number, b: number;
         r = (color >> 16) & 0xFF; // 提取红色分量
         g = (color >> 8) & 0xFF;  // 提取绿色分量
         b = color & 0xFF;         // 提取蓝色分量
-        singleheadlights(light, r, g, b); // 调用底层函数设置灯光颜色
+        singleHeadlights(light, r, g, b); // 调用底层函数设置灯光颜色
     }
 
 
@@ -33,7 +33,7 @@ namespace Acebott {
     //% weight=60
     //% group="Microbit Car"
     //% subcategory="Executive"
-    export function singleheadlights(light: RGBLights, r: number, g: number, b: number): void {
+    export function singleHeadlights(light: RgbLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
 
         buf[0] = 0x00;
@@ -61,20 +61,20 @@ namespace Acebott {
 
     export enum Direction {
         //% block="Forward" enumval=0
-        forward,
+        Forward,
         //% block="Backward" enumval=1
-        backward,
+        Backward,
         //% block="Left" enumval=2
-        left,
+        Left,
         //% block="Right" enumval=3
-        right
+        Right
     }
 
     //% blockId=stopcar block="Stop"
     //% subcategory="Executive"
     //% group="Microbit Car"
     //% weight=70
-    export function stopcar(): void {
+    export function stopCar(): void {
         let buf = pins.createBuffer(5);
         buf[0] = 0x00;                      //补位
         buf[1] = 0x01;		                //左轮
@@ -86,21 +86,21 @@ namespace Acebott {
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
 
-    //% blockId=motors block="Left wheel speed %lspeed\\% | Right speed %rspeed\\%"
-    //% lspeed.min=-100 lspeed.max=100
-    //% rspeed.min=-100 rspeed.max=100
+    //% blockId=motors block="Left wheel speed %leftSpeed\\% | Right speed %rightSpeed\\%"
+    //% leftSpeed.min=-100 leftSpeed.max=100
+    //% rightSpeed.min=-100 rightSpeed.max=100
     //% weight=100
     //% group="Microbit Car"
     //% subcategory="Executive"
-    export function motors(lspeed: number = 0, rspeed: number = 0): void {
+    export function motors(leftSpeed: number = 0, rightSpeed: number = 0): void {
         let buf = pins.createBuffer(4);
 
         // 限制速度范围
-        lspeed = Math.constrain(lspeed, -100, 100);
-        rspeed = Math.constrain(rspeed, -100, 100);
+        leftSpeed = Math.constrain(leftSpeed, -100, 100);
+        rightSpeed = Math.constrain(rightSpeed, -100, 100);
 
         // 左轮控制
-        if (lspeed === 0) {
+        if (leftSpeed === 0) {
             // 单独停止左轮
             buf[0] = 0x00;
             buf[1] = 0x01;  // 左轮
@@ -108,23 +108,23 @@ namespace Acebott {
             buf[3] = 0;     // 速度为0
             pins.i2cWriteBuffer(0x18, buf);
         }
-        else if (lspeed > 0) {
+        else if (leftSpeed > 0) {
             buf[0] = 0x00;
             buf[1] = 0x01;  // 左轮
             buf[2] = 0x02;  // 向前
-            buf[3] = lspeed;
+            buf[3] = leftSpeed;
             pins.i2cWriteBuffer(0x18, buf);
         }
-        else { // lspeed < 0
+        else { // leftSpeed < 0
             buf[0] = 0x00;
             buf[1] = 0x01;  // 左轮
             buf[2] = 0x01;  // 向后
-            buf[3] = -lspeed; // 取绝对值（~lspeed + 1 也可以，但 -lspeed 更直观）
+            buf[3] = -leftSpeed; // 取绝对值（~leftSpeed + 1 也可以，但 -leftSpeed 更直观）
             pins.i2cWriteBuffer(0x18, buf);
         }
 
         // 右轮控制
-        if (rspeed === 0) {
+        if (rightSpeed === 0) {
             // 单独停止右轮
             buf[0] = 0x00;
             buf[1] = 0x02;  // 右轮
@@ -132,18 +132,18 @@ namespace Acebott {
             buf[3] = 0;     // 速度为0
             pins.i2cWriteBuffer(0x18, buf);
         }
-        else if (rspeed > 0) {
+        else if (rightSpeed > 0) {
             buf[0] = 0x00;
             buf[1] = 0x02;  // 右轮
             buf[2] = 0x02;  // 向前
-            buf[3] = rspeed;
+            buf[3] = rightSpeed;
             pins.i2cWriteBuffer(0x18, buf);
         }
-        else { // rspeed < 0
+        else { // rightSpeed < 0
             buf[0] = 0x00;
             buf[1] = 0x02;  // 右轮
             buf[2] = 0x01;  // 向后
-            buf[3] = -rspeed; // 取绝对值
+            buf[3] = -rightSpeed; // 取绝对值
             pins.i2cWriteBuffer(0x18, buf);
         }
     }
@@ -242,11 +242,11 @@ namespace Acebott {
 
     export enum Rocker {
         //% block="X" enumval=0
-        x,
+        X,
         //% block="Y" enumval=1
-        y,
+        Y,
         //% block="Key" enumval=2
-        key,
+        Key,
     }
 
 
@@ -255,11 +255,11 @@ namespace Acebott {
     //% subcategory="Executive"
     export function joystick(dir: Rocker): number | boolean {
         switch (dir) {
-            case Rocker.x:
+            case Rocker.X:
                 return pins.analogReadPin(AnalogPin.P1); // 读取摇杆 X 值
-            case Rocker.y:
+            case Rocker.Y:
                 return pins.analogReadPin(AnalogPin.P2); // 读取摇杆 Y 值
-            case Rocker.key:
+            case Rocker.Key:
                 pins.setPull(DigitalPin.P8, PinPullMode.PullUp); // 设置按键引脚为上拉模式
                 return pins.digitalReadPin(DigitalPin.P8) === 0; // 读取按键状态，返回布尔值
             default:
@@ -267,21 +267,21 @@ namespace Acebott {
         }
     }
 
-    export enum Four_key {
+    export enum FourKey {
         //% block="Up" enumval=0
-        up,
+        Up,
         //% block="Down" enumval=1
-        down,
+        Down,
         //% block="Left" enumval=2
-        left,
+        Left,
         //% block="Right" enumval=3
-        right
+        Right
     }
 
     //% blockId=Four_bit_key block="Read the %dir key"
     //% group="Microbit Controller"
     //% subcategory="Executive"
-    export function Four_bit_key(dir: Four_key): boolean {
+    export function fourBitKey(dir: FourKey): boolean {
         // 设置引脚的上拉电阻
         pins.setPull(DigitalPin.P13, PinPullMode.PullUp)
         pins.setPull(DigitalPin.P14, PinPullMode.PullUp)
@@ -290,13 +290,13 @@ namespace Acebott {
 
         // 根据方向读取对应的按键状态
         switch (dir) {
-            case Four_key.up:
+            case FourKey.Up:
                 return pins.digitalReadPin(DigitalPin.P16) === 0;
-            case Four_key.down:
+            case FourKey.Down:
                 return pins.digitalReadPin(DigitalPin.P14) === 0;
-            case Four_key.left:
+            case FourKey.Left:
                 return pins.digitalReadPin(DigitalPin.P13) === 0;
-            case Four_key.right:
+            case FourKey.Right:
                 return pins.digitalReadPin(DigitalPin.P15) === 0;
             default:
                 return false; // 如果传入无效的方向，返回 false
@@ -304,19 +304,19 @@ namespace Acebott {
     }
 
 
-    export enum Vibration_motor_condition {
+    export enum VibrationMotorCondition {
         //% block="ON" enumval=0
-        on,
+        On,
         //% block="OFF" enumval=1
-        off,
+        Off,
     }
 
     // 控制震动电机
     //% blockId=Vibrating_machine block="Vibrating machine %condition"
     //% group="Microbit Controller"
     //% subcategory="Executive"
-    export function Vibrating_machine(condition: Vibration_motor_condition): void {
-        if (condition === Vibration_motor_condition.on) {
+    export function vibratingMachine(condition: VibrationMotorCondition): void {
+        if (condition === VibrationMotorCondition.On) {
             pins.digitalWritePin(DigitalPin.P12, 1); // 打开震动电机
         } else {
             pins.digitalWritePin(DigitalPin.P12, 0); // 关闭震动电机

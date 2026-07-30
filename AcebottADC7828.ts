@@ -1,23 +1,23 @@
 // AcebottADC7828.ts
 // ADS7828 8-channel 12-bit I2C ADC wrapper
 
-enum ADC7828_I2C_ADDRESS {
-    ADDR_0x48 = 0x48,
-    ADDR_0x49 = 0x49,
-    ADDR_0x4A = 0x4A,
-    ADDR_0x4B = 0x4B
+enum Adc7828I2cAddress {
+    Address0x48 = 0x48,
+    Address0x49 = 0x49,
+    Address0x4A = 0x4A,
+    Address0x4B = 0x4B
 }
 
 class AcebottADC7828 {
-    private i2cAddr: number = ADC7828_I2C_ADDRESS.ADDR_0x48
+    private i2cAddr: number = Adc7828I2cAddress.Address0x48
 
-    constructor(addr?: ADC7828_I2C_ADDRESS) {
+    constructor(addr?: Adc7828I2cAddress) {
         if (addr !== undefined) {
             this.i2cAddr = addr
         }
     }
 
-    setAddress(addr: ADC7828_I2C_ADDRESS): void {
+    setAddress(addr: Adc7828I2cAddress): void {
         this.i2cAddr = addr
     }
 
