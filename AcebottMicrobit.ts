@@ -61,13 +61,13 @@ namespace Acebott {
 
     export enum Direction {
         //% block="Forward" enumval=0
-        forward,
+        Forward,
         //% block="Backward" enumval=1
-        backward,
+        Backward,
         //% block="Left" enumval=2
-        left,
+        Left,
         //% block="Right" enumval=3
-        right
+        Right
     }
 
     //% blockId=stopcar block="Stop"
@@ -242,11 +242,11 @@ namespace Acebott {
 
     export enum Rocker {
         //% block="X" enumval=0
-        x,
+        X,
         //% block="Y" enumval=1
-        y,
+        Y,
         //% block="Key" enumval=2
-        key,
+        Key,
     }
 
 

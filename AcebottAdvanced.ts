@@ -15,10 +15,6 @@ namespace Acebott {
     let adc7828Init = false;
     let adc7828: AcebottADC7828;
 
-    // 舵机相关代码
-    let servoMap: { [key: number]: SugarServo } = {}
-
-
     function initOLED(): void {
         if (!oledInit) {
             oled = new AcebottOled()
@@ -200,36 +196,6 @@ namespace Acebott {
     export function bmp280SetAddress(addr: Bmp280I2cAddress): void {
         initBMP280()
         bmp280.setAddress(addr)
-    }
-
-    function initServo(pin: ServoPin): SugarServo {
-        if (!servoMap[pin]) {
-
-            let analogPin: AnalogPin
-
-            switch (pin) {
-                case ServoPin.P0: analogPin = AnalogPin.P0; break
-                case ServoPin.P1: analogPin = AnalogPin.P1; break
-                case ServoPin.P2: analogPin = AnalogPin.P2; break
-                case ServoPin.P3: analogPin = AnalogPin.P3; break
-                case ServoPin.P4: analogPin = AnalogPin.P4; break
-                case ServoPin.P5: analogPin = AnalogPin.P5; break
-                case ServoPin.P6: analogPin = AnalogPin.P6; break
-                case ServoPin.P7: analogPin = AnalogPin.P7; break
-                case ServoPin.P8: analogPin = AnalogPin.P8; break
-                case ServoPin.P9: analogPin = AnalogPin.P9; break
-                case ServoPin.P10: analogPin = AnalogPin.P10; break
-                case ServoPin.P11: analogPin = AnalogPin.P11; break
-                case ServoPin.P12: analogPin = AnalogPin.P12; break
-                case ServoPin.P13: analogPin = AnalogPin.P13; break
-                case ServoPin.P14: analogPin = AnalogPin.P14; break
-                case ServoPin.P15: analogPin = AnalogPin.P15; break
-                case ServoPin.P16: analogPin = AnalogPin.P16; break
-                default: analogPin = AnalogPin.P0
-            }
-            servoMap[pin] = new SugarServo(analogPin)
-        }
-        return servoMap[pin]
     }
 
     export enum Adc7828Channel {
