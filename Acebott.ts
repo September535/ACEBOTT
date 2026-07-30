@@ -15,9 +15,9 @@ enum AnalogReadPin {
 }
 
 enum RockerPinAxis {
-    //% block="Xpin"
+    //% block="xpin"
     X = 0,
-    //% block="Ypin"
+    //% block="ypin"
     Y = 1
 }
 
@@ -157,9 +157,9 @@ enum DistanceUnit {
 }
 
 enum Servos {
-    //% block="Servo1"
+    //% block="servo1"
     Servo1 = 1,
-    //% block="Servo2"
+    //% block="servo2"
     Servo2 = 2
 }
 
@@ -250,14 +250,14 @@ const enum IrButton {
 }
 
 const enum IrButtonAction {
-    //% block="Pressed"
+    //% block="pressed"
     Pressed = 0,
-    //% block="Released"
+    //% block="released"
     Released = 1,
 }
 
 const enum IrProtocol {
-    //% block="Keyestudio"
+    //% block="keyestudio"
     Keyestudio = 0,
     //% block="NEC"
     Nec = 1,
@@ -359,29 +359,41 @@ namespace Acebott {
     }
 
     // LED @start
+    /**
+     * LED at set brightness.
+     */
     //% blockId=setLedBrightness block="LED at %pin| set brightness %v"
     //% weight=70
     //% v.min=0 v.max=100 v.defl=50
     //% subcategory="Display"
     //% group="LED Modules"
+    //% help=github:acebott/docs/reference
     export function setLedBrightness(pin: AnalogWritePin, v: number): void {
         let port = getAnalogPin(pin)
         pins.analogWritePin(port, v * 10.23)
     }
+    /**
+     * LED at set.
+     */
 
     //% blockId=setLed block="LED at %pin| set %status"
     //% weight=70
     //% subcategory="Display"
     //% group="LED Modules"
+    //% help=github:acebott/docs/reference
     export function setLed(pin: DigitalWritePin, status: SwitchStatus): void {
         let port = getDigitalPin(pin)
         pins.digitalWritePin(port, status)
     }
     // LED @end
+    /**
+     * LED Matrix show Hex number.
+     */
 
-    //% blockId=ledMatrixShowHex block="LED Matrix show Hex number %hexNumber"
+    //% blockId=ledMatrixShowHex block="LED matrix show hex number %hexnumber"
     //% subcategory="Display"
     //% group="LED Matrix Modules"
+    //% help=github:acebott/docs/reference
     export function ledMatrixShowHex(hexNumber: number): void {
         for (let i = 0; i < 25; i += 5) {
             for (let j = 0; j < 5; j++) {
@@ -400,10 +412,11 @@ namespace Acebott {
     * @param index Servo Channel; eg: S1, S2
     * @param degree [0-180] degree of servo; eg: 0, 90, 180
    */
-    //% blockId=Servo_IIC block="180° Servo|%index|degree %degree"
+    //% blockId=Servo_IIC block="180° servo|%index|degree %degree"
     //% degree.min=0 degree.max=180
     //% group="Servo Modules"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function servoIic(index: Servos, degree: number): void {
         if (!initialized) {
             initPCA9685()
@@ -412,11 +425,15 @@ namespace Acebott {
         let value = v_us * 4096 / 20000
         setPwm(index * 5, 0, value)
     }
+    /**
+     * 180° Servo degree.
+     */
 
-    //% blockId=Servo_IO block="180° Servo|%pin|degree %degree"
+    //% blockId=Servo_IO block="180° servo|%pin|degree %degree"
     //% degree.min=0 degree.max=180
     //% group="Servo Modules"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function servoIo(pin: ServoPin, degree: number): void {
         let port = getAnalogPin(pin)
         if (degree > 180) degree = 180
@@ -462,11 +479,15 @@ namespace Acebott {
         //% block="clockwise"
         Clockwise = -1
     }
+    /**
+     * 360° Servo run speed.
+     */
 
-    //% blockId=servoRunDir block="360° Servo %pin run %direction speed %speed"
+    //% blockId=servoRunDir block="360° servo %pin run %direction speed %speed"
     //% subcategory="Executive"
     //% group="Servo Modules"
     //% speed.min=0 speed.max=100
+    //% help=github:acebott/docs/reference
     export function servoRunDir(pin: ServoPin, direction: ServoDirection, speed: number): void {
         let s = initServo(pin)
 
@@ -477,20 +498,28 @@ namespace Acebott {
 
         s.run(finalSpeed)
     }
+    /**
+     * 360° Servo stop.
+     */
 
-    //% blockId=servoStop block="360° Servo %pin stop"
+    //% blockId=servoStop block="360° servo %pin stop"
     //% subcategory="Executive"
     //% group="Servo Modules"
+    //% help=github:acebott/docs/reference
     export function servoStop(pin: ServoPin): void {
         let s = initServo(pin)
         s.stop()
     }
 
     // Relay @start
-    //% blockId=setRelay block="Relay at %pin| set %status"
+    /**
+     * Relay at set.
+     */
+    //% blockId=setRelay block="relay at %pin| set %status"
     //% weight=70
     //% subcategory="Executive"
     //% group="Relay Modules"
+    //% help=github:acebott/docs/reference
     export function setRelay(pin: DigitalWritePin, status: SwitchStatus): void {
         let port = getDigitalPin(pin)
         pins.digitalWritePin(port, status)
@@ -498,7 +527,10 @@ namespace Acebott {
     // Relay @end
 
     // RGB @start
-    //% blockId=setRGB block="Turn led R %rPin G %gPin B %bPin Set brightness at (R %rValue G %gValue B %bValue)"
+    /**
+     * Turn led R G B Set brightness at (R G B ).
+     */
+    //% blockId=setRGB block="turn led R %rpin G %gpin B %bpin set brightness at (R %rvalue G %gvalue B %bvalue)"
     //% inlineInputMode=inline
     //% weight=70
     //% rValue.min=0 rValue.max=255 rValue.defl=255
@@ -506,6 +538,7 @@ namespace Acebott {
     //% bValue.min=0 bValue.max=255 bValue.defl=255
     //% group="RGB LED Modules"
     //% subcategory="Display"
+    //% help=github:acebott/docs/reference
     export function setRgb(
         rPin: AnalogWritePin,
         gPin: AnalogWritePin,
@@ -526,10 +559,14 @@ namespace Acebott {
 
     // DC Motor @start
     const MOTORS_PIN: number[][] = [[4, 3], [12, 11], [7, 6], [9, 8]]
-    //% blockId=dc_motor_run block="DC Motor|%index|run speed %speed"
+    /**
+     * DC Motor run speed.
+     */
+    //% blockId=dc_motor_run block="DC motor|%index|run speed %speed"
     //% speed.min=-255 speed.max=255
     //% group="DC Motor Modules"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function dcMotorRun(index: Motors, speed: number): void {
         if (!initialized) {
             initPCA9685()
@@ -899,39 +936,55 @@ namespace Acebott {
         }
         return i
     }
+    /**
+     * 4-Digit Tube named turn off.
+     */
 
-    //% blockId=tm1650_displayOff block="4-Digit Tube |named %name| turn off"
+    //% blockId=tm1650_displayOff block="4-digit tube |named %name| turn off"
     //% name.defl="1"
     //% subcategory="Display"
     //% group="4-Digit Tube Modules"
+    //% help=github:acebott/docs/reference
     export function tm1650DisplayOff(name: string = "1"): void {
         let index: number = findInstanceIndex(name)
         instances[index].displayOff()
     }
+    /**
+     * 4-Digit Tube named show string.
+     */
 
-    //% blockId=tm1650_showString block="4-Digit Tube |named %name| show string|%s"
+    //% blockId=tm1650_showString block="4-digit tube |named %name| show string|%s"
     //% name.defl="1" s.defl="Ace"
     //% subcategory="Display"
     //% group="4-Digit Tube Modules"
+    //% help=github:acebott/docs/reference
     export function tm1650ShowString(name: string = "1", s: string = "Ace"): void {
         let index: number = findInstanceIndex(name)
         instances[index].showString(s)
     }
+    /**
+     * 4-Digit Tube named show number.
+     */
 
-    //% blockId=tm1650_showDecimal block="4-Digit Tube |named %name|show number|%n"
+    //% blockId=tm1650_showDecimal block="4-digit tube |named %name|show number|%n"
     //% name.defl="1"
     //% n.min=-999 n.max=9999 n.defl=0
     //% subcategory="Display"
     //% group="4-Digit Tube Modules"
+    //% help=github:acebott/docs/reference
     export function tm1650ShowDecimal(name: string = "1", n: number = 0): void {
         let index: number = findInstanceIndex(name)
         instances[index].showDecimal(n)
     }
+    /**
+     * 4-Digit Tube named with CLK DIO.
+     */
 
-    //% blockId=tm1650_configure block="4-Digit Tube |named %name| with CLK %clk|DIO %dio"
+    //% blockId=tm1650_configure block="4-digit tube |named %name| with CLK %clk|DIO %dio"
     //% name.defl="1" clk.defl=DigitalWritePin. dio.defl=DigitalWritePin.P1
     //% subcategory="Display"
     //% group="4-Digit Tube Modules"
+    //% help=github:acebott/docs/reference
     export function tm1650Configure(name: string = "1", clk: DigitalWritePin, dio: DigitalWritePin): void {
         let index: number = 0
         let clkPin = getDigitalPin(clk)
@@ -952,21 +1005,29 @@ namespace Acebott {
 
 
     // Laser @start
-    //% blockId=setLaser block="Laser at %pin| set %status"
+    /**
+     * Laser at set.
+     */
+    //% blockId=setLaser block="laser at %pin| set %status"
     //% weight=70
     //% subcategory="Display"
     //% group="Laser Modules"
+    //% help=github:acebott/docs/reference
     export function setLaser(pin: DigitalWritePin, status: SwitchStatus): void {
         let port = getDigitalPin(pin)
         pins.digitalWritePin(port, status)
 
     }
     // Laser @end
+    /**
+     * Photoresistance at get valuev（0~100）.
+     */
 
     //% blockId=Photoresistance block="photoresistance at %pin get valuev（0~100）"
     //% weight=70
     //% group="photoresistance Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function photoresistance(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         let rawValue = pins.analogReadPin(port)
@@ -974,63 +1035,91 @@ namespace Acebott {
         let mappedValue = Math.map(rawValue, 0, 1023, 0, 100)
         return Math.round(mappedValue)
     }
+    /**
+     * Moisture Sensor at get value.
+     */
 
-    //% blockId=Mosisture_Sensor block="moisture Sensor at %pin get value"
+    //% blockId=Mosisture_Sensor block="moisture sensor at %pin get value"
     //% group="moisture Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function moisture(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         return pins.analogReadPin(port)
     }
+    /**
+     * PIR Motion at get value.
+     */
 
-    //% blockId=PIR block="PIR Motion at %pin get value"
+    //% blockId=PIR block="PIR motion at %pin get value"
     //% weight=70
     //% group="PIR Motion Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function pirMotion(pin: DigitalPin): number {
         return pins.digitalReadPin(pin)
     }
+    /**
+     * Sound Sensor at get value.
+     */
 
-    //% blockId=Sound_Sensor block="Sound Sensor at %pin get value"
+    //% blockId=Sound_Sensor block="sound sensor at %pin get value"
     //% group="Sound Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function soundSensor(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         return pins.analogReadPin(port)
     }
+    /**
+     * Infrared obstacle at get value.
+     */
 
     //% blockId=obstacle 
-    //% block="Infrared obstacle at %pin get value"
+    //% block="infrared obstacle at %pin get value"
     //% weight=70
     //% group="Infrared Obstacle Avoidance Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function infraredObstacle(pin: DigitalPin): number {
         return pins.digitalReadPin(pin)
     }
+    /**
+     * Tilt Sensor at get value.
+     */
 
     //% blockId=Tilt 
-    //% block="Tilt Sensor at %pin get value"
+    //% block="tilt sensor at %pin get value"
     //% weight=70
     //% group="Tilt Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function tiltSensor(pin: DigitalPin): number {
         return pins.digitalReadPin(pin)
     }
+    /**
+     * Pin reads the analog value of the LM35.
+     */
 
-    //% blockId=sensor_temperature block="Pin %pin reads the analog value of the LM35"
+    //% blockId=sensor_temperature block="pin %pin reads the analog value of the LM35"
     //% weight=70
     //% group="LM35 Temperature Sensor"
     //% inlineInputMode=inline
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function sensorTemperature(pin: AnalogPin): number {
         let temp = (pins.analogReadPin(pin) / 1023) * 3.3 * 100;
         return Math.round(temp * 100) / 100;
     }
+    /**
+     * Actuator_buzzer1 pin freq.
+     */
 
-    //% blockId=actuator_buzzer1 block="Actuator_buzzer1 pin %pin|freq %freq"
+    //% blockId=actuator_buzzer1 block="actuator_buzzer1 pin %pin|freq %freq"
     //% weight=70  buzzer
     //% group="Buzzer Modules"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function actuatorBuzzer(pin: AnalogPin, freq: number): void {
         pins.analogWritePin(pin, freq)
     }
@@ -1038,21 +1127,29 @@ namespace Acebott {
     let Xpin = 0
     let Ypin = 0
     let Bpin = 0
+    /**
+     * RockerPin setup pinX pinY pinB.
+     */
 
-    //% blockId=rockerPin block="RockerPin setup | pinX %xPin|pinY %yPin|pinB %buttonPin"
+    //% blockId=rockerPin block="rockerpin setup | pinx %xpin|piny %ypin|pinb %buttonpin"
     //% weight=70
     //% group="Joystick Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function rockerPin(xPin: AnalogPin, yPin: AnalogPin, buttonPin: DigitalPin): void {
         Xpin = xPin
         Ypin = yPin
         Bpin = buttonPin
     }
+    /**
+     * Select analog pin.
+     */
 
-    //% blockId=_analogRead block="Select analog pin  %axis"
+    //% blockId=_analogRead block="select analog pin  %axis"
     //% weight=69
     //% group="Joystick Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function rockerAnalogRead(axis: RockerPinAxis): number {
         let a
         if (axis == 0)
@@ -1061,11 +1158,15 @@ namespace Acebott {
             a = Ypin
         return pins.analogReadPin(a)
     }
+    /**
+     * Is the rocker module pressed?.
+     */
 
-    //% blockId=_digitalRead block="Is the rocker module pressed?"
+    //% blockId=_digitalRead block="is the rocker module pressed?"
     //% weight=68
     //% group="Joystick Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function rockerButtonPressed(): boolean {
         // pins.digitalWritePin(Bpin, 0)
         if (pins.digitalReadPin(Bpin) == 1) {
@@ -1082,7 +1183,7 @@ namespace Acebott {
      * @param turn
      * @param speed
      */
-    //% blockId=actuator_motor_run block="130 DC Motor at IN+ | %inA | IN- | %inB | run speed %speed"  group="130 DC Motor"
+    //% blockId=actuator_motor_run block="130 DC motor at IN+ | %ina | IN- | %inb | run speed %speed"  group="130 DC Motor"
     //% weight=70
     //% inlineInputMode=inline
     //% speed.min=-255 speed.max=255
@@ -1091,6 +1192,7 @@ namespace Acebott {
     //% speed.defl=100
     //% group="130 DC Motor Modules"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function dcMotor130Run(inA: AnalogWritePin, inB: DigitalWritePin, speed: number): void {
         let pwmPin = getAnalogPin(inA)
         let dirPin = getDigitalPin(inB)
@@ -1108,12 +1210,16 @@ namespace Acebott {
     // 130 DC Motor @end
 
     // Ultrasonic Sensor @start
+    /**
+     * Ultrasonic Sensor with Echo Trig get distance in.
+     */
     //% blockId="ultrasonic_distance"
-    //% block="Ultrasonic Sensor with Echo|%echo|Trig|%trig|get distance in %unit"
+    //% block="ultrasonic sensor with echo|%echo|trig|%trig|get distance in %unit"
     //% echo.defl=AnalogWritePin.P0
     //% trig.defl=DigitalWritePin.P1
     //% group="Ultrasonic Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function ultrasonicDistance(echo: DigitalPin, trig: DigitalWritePin, unit: DistanceUnit): number {
         let trigPin = getDigitalPin(trig)
         // send pulse
@@ -1146,12 +1252,16 @@ namespace Acebott {
     // Ultrasonic Sensor @end
 
     // Button Module @start
+    /**
+     * Button at is pressed.
+     */
     //% blockId="isButtonPressed"
-    //% block="Button at|%pin|is pressed"
+    //% block="button at|%pin|is pressed"
     //% pin.defl=DigitalReadPin.P0
     //% group="Button Sensor"
     //% subcategory="Sensor"
 
+    //% help=github:acebott/docs/reference
     export function isButtonPressed(pin: DigitalReadPin): boolean {
         let port = getDigitalPin(pin)
         return pins.digitalReadPin(port) == 0;
@@ -1162,10 +1272,14 @@ namespace Acebott {
     let dht11Humidity = 0
     let dht11Temperature = 0
     let startTime = 0
+    /**
+     * Temperature and Humidity Sensor at get value.
+     */
 
-    //% blockId="DHT11_getvalue" block="Temperature and Humidity Sensor at|%pin| get value|%dataType"
+    //% blockId="DHT11_getvalue" block="temperature and humidity sensor at|%pin| get value|%datatype"
     //% group="Temperature and Humidity Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function dht11Value(pin: DigitalWritePin, dataType: Dht11Type): number {
         const DHT11_TIMEOUT = 100
         const buffer = pins.createBuffer(40)
@@ -1234,9 +1348,13 @@ namespace Acebott {
     // DHT11 @end
 
     // Raindrop Sensor @start
-    //% blockId=RaindropSensor block="Raindrop Sensor at %pin get value"
+    /**
+     * Raindrop Sensor at get value.
+     */
+    //% blockId=RaindropSensor block="raindrop sensor at %pin get value"
     //% group="Raindrop Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function raindropSensor(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         return pins.analogReadPin(port)
@@ -1244,9 +1362,13 @@ namespace Acebott {
     // Raindrop Sensor @end
 
     // MQ-4 Sensor @start
-    //% blockId=MQ4_Sensor block="MQ-4 Sensor at %pin get value"
+    /**
+     * MQ-4 Sensor at get value.
+     */
+    //% blockId=MQ4_Sensor block="MQ-4 sensor at %pin get value"
     //% group="MQ-4 Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function mq4Sensor(pin: AnalogReadPin): number {
         let port = getAnalogPin(pin)
         return pins.analogReadPin(port)
@@ -1436,6 +1558,9 @@ namespace Acebott {
             }
         }
     }
+    /**
+     * IR on button.
+     */
 
     //% blockId=IR_onButton
     //% block="IR on button | %button | %action"
@@ -1444,6 +1569,7 @@ namespace Acebott {
     //% button.fieldOptions.tooltips="false"
     //% group="IR Receiver Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function irOnButton(
         button: IrButton,
         action: IrButtonAction,
@@ -1457,6 +1583,9 @@ namespace Acebott {
             irState.onIrButtonReleased.push(new IrButtonHandler(button, handler));
         }
     }
+    /**
+     * IR button decode result is.
+     */
 
 
     //% blockId=IR_DecodeResult
@@ -1466,6 +1595,7 @@ namespace Acebott {
     //% button.fieldOptions.tooltips="false"
     //% group="IR Receiver Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function irIsDecodeResult(button: IrButton): boolean {
         let d = -1
         basic.pause(0); // Yield to support background processing when called in tight loops
@@ -1476,11 +1606,15 @@ namespace Acebott {
         }
         return (d == button)
     }
+    /**
+     * IR data is received.
+     */
 
     //% blockId=IR_isReceived
     //% block="IR data is received"
     //% group="IR Receiver Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function irIsReceived(): boolean {
         basic.pause(0); // Yield to support background processing when called in tight loops
         initIrState();
@@ -1521,6 +1655,9 @@ namespace Acebott {
         }
         return hex;
     }
+    /**
+     * IR receiver at.
+     */
 
     //% blockId="IRReceiver_init"
     //% block="IR receiver at %pin"
@@ -1529,6 +1666,7 @@ namespace Acebott {
     //% pin.fieldOptions.tooltips="false"
     //% group="IR Receiver Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function irReceiverInit(pin: DigitalPin): void {
         initIrState();
 
@@ -1937,10 +2075,14 @@ namespace Acebott {
 
         return getIDNum(uid)
     }
+    /**
+     * RFID read ID.
+     */
 
     //% block="RFID read ID"
     //% group="RFID Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function rfidId() {
         let id = readID()
         while (!(id)) {
@@ -1951,10 +2093,14 @@ namespace Acebott {
         }
         return id
     }
+    /**
+     * RFID read data.
+     */
 
     //% block="RFID read data"
     //% group="RFID Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function rfidReadData(): string {
         let text = readFromCard()
         while (!text) {
@@ -1966,12 +2112,16 @@ namespace Acebott {
         }
         return text
     }
+    /**
+     * RFID write data to card.
+     */
 
 
     //% block="RFID write data %text to card"
     //% text.defl="Acebott"
     //% group="RFID Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function rfidWriteToCard(text: string) {
         let id = writeToCard(text)
 
@@ -1984,10 +2134,14 @@ namespace Acebott {
         }
         return
     }
+    /**
+     * RFID Module initialization.
+     */
 
-    //% block="RFID Module initialization"
+    //% block="RFID module initialization"
     //% group="RFID Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function rfidInit() {
         // reset module
         i2cwrite(MFRC522_ADDRESS, CommandReg, PCD_RESETPHASE)
@@ -2007,11 +2161,15 @@ namespace Acebott {
     let L_PIN = 0;
     let M_PIN = 0;
     let R_PIN = 0;
+    /**
+     * Trace Sensor get value.
+     */
 
 
-    //% blockId=Trace_Sensor_getValue block="Trace Sensor get value %index"
+    //% blockId=Trace_Sensor_getValue block="trace sensor get value %index"
     //% group="Trace Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function traceSensorValue(index: TraceSensorIndex): number {
         switch (index) {
             case 0:
@@ -2024,13 +2182,17 @@ namespace Acebott {
                 return -1
         }
     }
+    /**
+     * Trace Sensor set pin at (R:, M: , L: ).
+     */
 
-    //% blockId=Trace_Sensor_init block="Trace Sensor set pin at (R:%rightPin, M:|%middlePin|, L:|%leftPin)"
+    //% blockId=Trace_Sensor_init block="trace sensor set pin at (R:%rightpin, M:|%middlepin|, L:|%leftpin)"
     //% rightPin.defl=AnalogReadPin.P0
     //% middlePin.defl=AnalogReadPin.P1
     //% leftPin.defl=AnalogReadPin.P2
     //% group="Trace Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function traceSensorInit(rightPin: AnalogReadPin, middlePin: AnalogReadPin, leftPin: AnalogReadPin): void {
         R_PIN = getAnalogPin(rightPin)
         M_PIN = getAnalogPin(middlePin)
@@ -2042,20 +2204,28 @@ namespace Acebott {
     // Speech Recognition @start
 
     let speech_cmd = 0;
+    /**
+     * Speech Recognition getCMD is.
+     */
 
-    //% block="Speech Recognition getCMD is %command"
+    //% block="speech recognition getcmd is %command"
     //% blockId = Speech_Recognition_getCMD
     //% group="Speech Recognition Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function speechRecognitionCommand(command: number): boolean {
         return command == speech_cmd;
     }
+    /**
+     * Speech Recognition Init TX at.
+     */
 
 
     //% blockId="Speech_Recognition_Init" 
-    //% block="Speech Recognition Init TX at %transmitPin"
+    //% block="speech recognition init TX at %transmitpin"
     //% group="Speech Recognition Sensor"
     //% subcategory="Sensor"
+    //% help=github:acebott/docs/reference
     export function speechRecognitionInit(transmitPin: UartPin): void {
         serial.redirect(SerialPin.USB_TX, getUartPin(transmitPin), BaudRate.BaudRate115200);
         basic.forever(function () {

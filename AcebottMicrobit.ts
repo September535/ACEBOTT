@@ -3,19 +3,23 @@
 
 namespace Acebott {
     export enum RgbLights {
-        //% blockId="Right_RGB" block="Right"
+        //% blockId="Right_RGB" block="right"
         Right = 1,
-        //% blockId="Left_RGB" block="Left"
+        //% blockId="Left_RGB" block="left"
         Left = 2,
         //% blockId="ALL" block="ALL"
         All = 3
     }
+    /**
+     * Set LED color.
+     */
 
-    //% blockId=colorLight block="Set LED %light color $color"
+    //% blockId=colorLight block="set LED %light color $color"
     //% color.shadow="colorNumberPicker"
     //% weight=65
     //% group="Microbit Car"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function colorLight(light: RgbLights, color: number): void {
         let r: number, g: number, b: number;
         r = (color >> 16) & 0xFF; // 提取红色分量
@@ -23,16 +27,20 @@ namespace Acebott {
         b = color & 0xFF;         // 提取蓝色分量
         singleHeadlights(light, r, g, b); // 调用底层函数设置灯光颜色
     }
+    /**
+     * Set lamp color R: G: B:.
+     */
 
 
     //% inlineInputMode=inline
-    //% blockId=singleheadlights block="Set %light lamp color R:%r G:%g B:%b"
+    //% blockId=singleheadlights block="set %light lamp color R:%r G:%g B:%b"
     //% r.min=0 r.max=255
     //% g.min=0 g.max=255
     //% b.min=0 b.max=255
     //% weight=60
     //% group="Microbit Car"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function singleHeadlights(light: RgbLights, r: number, g: number, b: number): void {
         let buf = pins.createBuffer(5);
 
@@ -60,20 +68,24 @@ namespace Acebott {
     // Microbit Car  @start
 
     export enum Direction {
-        //% block="Forward" enumval=0
+        //% block="forward" enumval=0
         Forward,
-        //% block="Backward" enumval=1
+        //% block="backward" enumval=1
         Backward,
-        //% block="Left" enumval=2
+        //% block="left" enumval=2
         Left,
-        //% block="Right" enumval=3
+        //% block="right" enumval=3
         Right
     }
+    /**
+     * Stop.
+     */
 
-    //% blockId=stopcar block="Stop"
+    //% blockId=stopcar block="stop"
     //% subcategory="Executive"
     //% group="Microbit Car"
     //% weight=70
+    //% help=github:acebott/docs/reference
     export function stopCar(): void {
         let buf = pins.createBuffer(5);
         buf[0] = 0x00;                      //补位
@@ -85,13 +97,17 @@ namespace Acebott {
         buf[1] = 0x02;		                //右轮停止
         pins.i2cWriteBuffer(0x18, buf);     //数据发送
     }
+    /**
+     * Left wheel speed % Right speed %.
+     */
 
-    //% blockId=motors block="Left wheel speed %leftSpeed\\% | Right speed %rightSpeed\\%"
+    //% blockId=motors block="left wheel speed %leftspeed\\% | right speed %rightspeed\\%"
     //% leftSpeed.min=-100 leftSpeed.max=100
     //% rightSpeed.min=-100 rightSpeed.max=100
     //% weight=100
     //% group="Microbit Car"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function motors(leftSpeed: number = 0, rightSpeed: number = 0): void {
         let buf = pins.createBuffer(4);
 
@@ -147,12 +163,16 @@ namespace Acebott {
             pins.i2cWriteBuffer(0x18, buf);
         }
     }
+    /**
+     * Set direction speed.
+     */
 
-    //% blockId=c block="Set direction %dir | speed %speed"
+    //% blockId=c block="set direction %dir | speed %speed"
     //% weight=100
     //% speed.min=0 speed.max=100
     //% group="Microbit Car"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function moveTime(dir: Direction, speed: number = 50): void {
 
         let buf = pins.createBuffer(5);
@@ -208,11 +228,14 @@ namespace Acebott {
     let _initEvents = true
 
     export enum MbPins {
-        //% block="Left" 
+        //% block="left"
         Left = DAL.MICROBIT_ID_IO_P1,
-        //% block="Right" 
+        //% block="right"
         Right = DAL.MICROBIT_ID_IO_P0
     }
+    /**
+     * Tracking value.
+     */
 
 
     //% blockId=tracking block="%pin tracking value"
@@ -220,6 +243,7 @@ namespace Acebott {
     //% side.fieldEditor="gridpicker" side.fieldOptions.columns=2
     //% weight=45
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function tracking(side: MbPins): number {
         pins.setPull(AnalogReadWritePin.P0, PinPullMode.PullUp);
         pins.setPull(AnalogReadWritePin.P1, PinPullMode.PullUp);
@@ -245,14 +269,18 @@ namespace Acebott {
         X,
         //% block="Y" enumval=1
         Y,
-        //% block="Key" enumval=2
+        //% block="key" enumval=2
         Key,
     }
+    /**
+     * Read joystick value.
+     */
 
 
-    //% blockId=joystick block="Read joystick value %dir "
+    //% blockId=joystick block="read joystick value %dir "
     //% group="Microbit Controller"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function joystick(dir: Rocker): number | boolean {
         switch (dir) {
             case Rocker.X:
@@ -268,19 +296,23 @@ namespace Acebott {
     }
 
     export enum FourKey {
-        //% block="Up" enumval=0
+        //% block="up" enumval=0
         Up,
-        //% block="Down" enumval=1
+        //% block="down" enumval=1
         Down,
-        //% block="Left" enumval=2
+        //% block="left" enumval=2
         Left,
-        //% block="Right" enumval=3
+        //% block="right" enumval=3
         Right
     }
+    /**
+     * Read the key.
+     */
 
-    //% blockId=Four_bit_key block="Read the %dir key"
+    //% blockId=Four_bit_key block="read the %dir key"
     //% group="Microbit Controller"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function fourBitKey(dir: FourKey): boolean {
         // 设置引脚的上拉电阻
         pins.setPull(DigitalPin.P13, PinPullMode.PullUp)
@@ -312,9 +344,13 @@ namespace Acebott {
     }
 
     // 控制震动电机
-    //% blockId=Vibrating_machine block="Vibrating machine %condition"
+    /**
+     * Vibrating machine.
+     */
+    //% blockId=Vibrating_machine block="vibrating machine %condition"
     //% group="Microbit Controller"
     //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
     export function vibratingMachine(condition: VibrationMotorCondition): void {
         if (condition === VibrationMotorCondition.On) {
             pins.digitalWritePin(DigitalPin.P12, 1); // 打开震动电机

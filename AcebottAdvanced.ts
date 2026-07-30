@@ -66,18 +66,26 @@ namespace Acebott {
         //% block="negro"
         Black = 7
     }
+    /**
+     * Color sensor detect color.
+     */
 
-    //% blockId=colorDetect block="Color sensor detect color"
+    //% blockId=colorDetect block="color sensor detect color"
     //% subcategory="Sensor"
     //% group="Color Sensor -V2"
+    //% help=github:acebott/docs/reference
     export function colorDetect(): string {
         initColor()
         return sugarColor.detectColor()
     }
+    /**
+     * Color sensor get value.
+     */
 
-    //% blockId=getRGBValue block=" Color sensor get %channel value"
+    //% blockId=getRGBValue block=" color sensor get %channel value"
     //% subcategory="Sensor"
     //% group="Color Sensor -V2"
+    //% help=github:acebott/docs/reference
     export function rgbValue(channel: RgbChannel): number {
         initColor()
         sugarColor.update()
@@ -92,11 +100,15 @@ namespace Acebott {
                 return 0
         }
     }
+    /**
+     * The target is.
+     */
 
-    //% blockId=isColor block="The target is %color"
+    //% blockId=isColor block="the target is %color"
     //% subcategory="Sensor"
     //% group="Color Sensor -V2"
     //% blockGap=8
+    //% help=github:acebott/docs/reference
     export function isColor(color: ColorName): boolean {
         initColor()
         let colorStr = ""
@@ -131,68 +143,96 @@ namespace Acebott {
         serial.writeLine("" + (isMatch ? "true" : "false"))
         return isMatch
     }
+    /**
+     * OLED show number at X Y.
+     */
     //% blockId=oledShowNumber block="OLED show number %num at X %x Y %y"
     //% subcategory="Display"
     //% group="OLED12864-1.3inch Modules"
     //% x.min=0 x.max=127
     //% y.min=0 y.max=63
+    //% help=github:acebott/docs/reference
     export function oledShowNumber(num: number, x: number, y: number): void {
         initOLED()
         oled.showNumber(x, y, num)
     }
+    /**
+     * OLED show string at X Y.
+     */
 
     //% blockId=oledShowString block="OLED show string %str at X %x Y %y"
     //% subcategory="Display"
     //% group="OLED12864-1.3inch Modules"
     //% x.min=0 x.max=127
     //% y.min=0 y.max=63
+    //% help=github:acebott/docs/reference
     export function oledShowString(str: string, x: number, y: number,): void {
         initOLED()
         oled.showString(x, y, str)
     }
+    /**
+     * OLED clear line at Y.
+     */
 
     //% blockId=oledClearLine block="OLED clear line at Y %y"
     //% subcategory="Display"
     //% group="OLED12864-1.3inch Modules"
     //% y.min=0 y.max=63
+    //% help=github:acebott/docs/reference
     export function oledClearLine(y: number): void {
         initOLED()
         oled.clearLine(y)
     }
+    /**
+     * OLED clear screen.
+     */
 
     //% blockId=oledClear block="OLED clear screen"
     //% subcategory="Display"
     //% group="OLED12864-1.3inch Modules"
+    //% help=github:acebott/docs/reference
     export function oledClear(): void {
         initOLED()
         oled.clear()
     }
 
     // BMP280 相关代码
+    /**
+     * BMP280 get temperature (°C).
+     */
 
     //% blockId=bmp280GetTemperature block="BMP280 get temperature (°C)"
     //% subcategory="Sensor"
     //% group="Barometric Pressure Sensor"
+    //% help=github:acebott/docs/reference
     export function bmp280GetTemperature(): number {
         initBMP280()
         let temp = bmp280.getTemperatureFloat()
         // 确保返回两位小数
         return Math.round(temp * 100) / 100
     }
+    /**
+     * BMP280 get pressure (hPa).
+     */
 
-    //% blockId=bmp280GetPressure block="BMP280 get pressure (hPa)"
+    //% blockId=bmp280GetPressure block="BMP280 get pressure (hpa)"
     //% subcategory="Sensor"
     //% group="Barometric Pressure Sensor"
+    //% help=github:acebott/docs/reference
     export function bmp280GetPressure(): number {
         initBMP280()
         let pressure = bmp280.getPressureHpa()
         // 确保返回两位小数
         return Math.round(pressure * 100) / 100
     }
+    /**
+     * BMP280 set address.
+     */
 
     //% blockId=bmp280SetAddress block="BMP280 set address %addr"
     //% subcategory="Sensor"
     //% group="Barometric Pressure Sensor"
+    //% help=github:acebott/docs/reference
     export function bmp280SetAddress(addr: Bmp280I2cAddress): void {
         initBMP280()
         bmp280.setAddress(addr)
@@ -223,18 +263,26 @@ namespace Acebott {
             adc7828Init = true
         }
     }
+    /**
+     * ADC7828 read channel.
+     */
 
     //% blockId=adc7828ReadChannel block="ADC7828 read channel %channel"
     //% subcategory="Sensor"
     //% group="ADC7828 Sensor"
+    //% help=github:acebott/docs/reference
     export function adc7828ReadChannel(channel: Adc7828Channel): number {
         initADC7828()
         return adc7828.readChannel(channel)
     }
+    /**
+     * ADC7828 set address.
+     */
 
     //% blockId=adc7828SetAddress block="ADC7828 set address %addr"
     //% subcategory="Sensor"
     //% group="ADC7828 Sensor"
+    //% help=github:acebott/docs/reference
     export function adc7828SetAddress(addr: Adc7828I2cAddress): void {
         initADC7828()
         adc7828.setAddress(addr)

@@ -33,32 +33,48 @@ namespace Acebott {
         set(d)
         set(d << 4)
     }
+    /**
+     * LCD1602 clear screen.
+     */
 
     //% blockId="LCD1602_Clear" block="LCD1602 clear screen"
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602Clear(): void {
         cmd(0x01)
     }
+    /**
+     * LCD1602 shift left.
+     */
 
     //% blockId="LCD1602_shl" block="LCD1602 shift left"
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602ShiftLeft(): void {
         cmd(0x18)
     }
+    /**
+     * LCD1602 shift right.
+     */
 
     //% blockId="LCD1602_shr" block="LCD1602 shift right"
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602ShiftRight(): void {
         cmd(0x1C)
     }
+    /**
+     * LCD1602 create custom character.
+     */
 
     //% blockId="LCD1602_Makecharacter"
-    //% block="LCD1602 create custom character %characterIndex|%im"
+    //% block="LCD1602 create custom character %characterindex|%im"
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602CreateCharacter(characterIndex: CharIndex, im: Image): void {
         const customChar = [0, 0, 0, 0, 0, 0, 0, 0];
         for (let y = 0; y < 8; y++) {
@@ -70,9 +86,12 @@ namespace Acebott {
         }
         Custom_Char[characterIndex] = customChar;
     }
+    /**
+     * Custom character.
+     */
 
     //% blockId="LCD1602_Characterpixels"
-    //% block="Custom character"
+    //% block="custom character"
     //% imageLiteral=1
     //% imageLiteralColumns=5
     //% imageLiteralRows=8
@@ -80,17 +99,22 @@ namespace Acebott {
     //% shim=images::createImage
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602CharacterPixels(i: string): Image {
         return <Image><any>i;
     }
+    /**
+     * LCD1602 at (x: ,y: ) show custom character.
+     */
 
 
     //% blockId="LCD1602_Showchararacter"
-    //% block="LCD1602 at (x:|%x|,y:|%y) show custom character|%characterIndex"
+    //% block="LCD1602 at (x:|%x|,y:|%y) show custom character|%characterindex"
     //% x.min=0 x.max=15
     //% y.min=0 y.max=1
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602ShowCharacter(x: number, y: number, characterIndex: CharIndex): void {
         let a: number
         if (y > 0)
@@ -106,6 +130,9 @@ namespace Acebott {
         dat(characterIndex)
 
     }
+    /**
+     * LCD1602 at (x: ,y: ) show string.
+     */
 
     //% blockId="LCD1602_ShowString" block="LCD1602 at (x:|%x|,y:|%y) show string|%s|"
     //% x.min=0 x.max=15
@@ -113,6 +140,7 @@ namespace Acebott {
     //% s.defl="Hello,Acebott!"
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602ShowString(x: number, y: number, s: string): void {
         let a: number
 
@@ -127,20 +155,28 @@ namespace Acebott {
             dat(s.charCodeAt(i))
         }
     }
+    /**
+     * LCD1602 at (x: ,y: ) show number.
+     */
 
     //% blockId="LCD16202_ShowNumber" block="LCD1602 at (x:|%x|,y:|%y) show number|%n|"
     //% x.min=0 x.max=15
     //% y.min=0 y.max=1
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602ShowNumber(x: number, y: number, n: number): void {
         let s = n.toString()
         lcd1602ShowString(x, y, s)
     }
+    /**
+     * LCD1602 initialization.
+     */
 
     //% blockId="LCD1602_Init" block="LCD1602 initialization"
     //% subcategory="Display"
     //% group="LCD1602 Modules"
+    //% help=github:acebott/docs/reference
     export function lcd1602Init(): void {
         i2cAddr = 39
         BK = 8
