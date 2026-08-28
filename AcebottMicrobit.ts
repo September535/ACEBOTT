@@ -360,3 +360,30 @@ namespace Acebott {
     }
     // Microbit controller  @end
 }
+
+
+namespace Acebott {
+    let stcInit = false
+    let stc: AcebottSTC
+
+    function initSTC(): void {
+        if (!stcInit) {
+            stc = new AcebottSTC()
+            stcInit = true
+        }
+    }
+
+    /**
+     * Control a servo through the external STC8H robotic arm controller.
+     */
+    //% blockId=stcServoAngle block="microbit robotic arm|channel %channel|angle %degree"
+    //% channel.min=0 channel.max=5 channel.defl=0
+    //% degree.min=0 degree.max=180 degree.defl=90
+    //% group="Microbit Controller"
+    //% subcategory="Executive"
+    //% help=github:acebott/docs/reference
+    export function stcServoAngle(channel: number, degree: number): void {
+        initSTC()
+        stc.setServoAngle(channel, degree)
+    }
+}
