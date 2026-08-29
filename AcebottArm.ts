@@ -26,8 +26,8 @@ namespace Acebott {
         MicrobitP12 = 7
     }
 
-    const ARM_ADC_LOW = 1800
-    const ARM_ADC_HIGH = 2300
+    const ARM_ADC_LOW = 100
+    const ARM_ADC_HIGH = 200
 
     let armBaseAngle = 90
     let armBaseLastAngle = -1
