@@ -237,5 +237,7 @@
     "Acebott.ArmOutputChannel.STC5|block": "STC5",
     "Acebott.ArmOutputChannel.MicrobitP2|block": "P2",
     "Acebott.ArmOutputChannel.MicrobitP12|block": "P12",
-    "{id:group}Microbit Robotic Arm": "Microbit Robotic Arm"
+    "{id:group}Microbit Robotic Arm": "Microbit Robotic Arm",
+    "Acebott.i2cAddressRead|block": "I2C address read",
+    "{id:group}I2C Tools": "I2C Tools"
 }

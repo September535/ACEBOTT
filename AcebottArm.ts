@@ -26,12 +26,12 @@ namespace Acebott {
         MicrobitP12 = 7
     }
 
-    const ARM_ADC_LOW = 100
+    const ARM_ADC_LOW = 50
     const ARM_ADC_HIGH = 200
 
-    let armBaseAngle = 90
-    let armBaseLastAngle = -1
-    let armBaseLastOutput = -1
+    // Every physical output keeps an independent angle.
+    let armOutputAngles = [90, 90, 90, 90, 90, 90, 90, 90]
+    let armOutputLastAngles = [-1, -1, -1, -1, -1, -1, -1, -1]
 
     function writeArmOutput(channel: ArmOutputChannel, angle: number): void {
         angle = Math.constrain(angle, 0, 180)
@@ -62,7 +62,13 @@ namespace Acebott {
         outputChannel: ArmOutputChannel,
         step: number
     ): void {
+        let outputIndex = outputChannel
+        if (outputIndex < 0 || outputIndex > 7) {
+            return
+        }
+
         let adcValue = adc7828ReadChannel(adcChannel)
+        let angle = armOutputAngles[outputIndex]
 
         if (step < 1) {
             step = 1
@@ -72,17 +78,17 @@ namespace Acebott {
         }
 
         if (adcValue > ARM_ADC_HIGH) {
-            armBaseAngle += step
+            angle += step
         } else if (adcValue < ARM_ADC_LOW) {
-            armBaseAngle -= step
+            angle -= step
         }
 
-        armBaseAngle = Math.constrain(armBaseAngle, 0, 180)
+        angle = Math.constrain(angle, 0, 180)
+        armOutputAngles[outputIndex] = angle
 
-        if (armBaseAngle != armBaseLastAngle || outputChannel != armBaseLastOutput) {
-            writeArmOutput(outputChannel, armBaseAngle)
-            armBaseLastAngle = armBaseAngle
-            armBaseLastOutput = outputChannel
+        if (angle != armOutputLastAngles[outputIndex]) {
+            writeArmOutput(outputChannel, angle)
+            armOutputLastAngles[outputIndex] = angle
         }
     }
 }

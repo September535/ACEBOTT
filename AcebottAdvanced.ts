@@ -293,6 +293,38 @@ namespace Acebott {
         return status == 0
     }
 
+    function acebottI2cAddressText(address: number): string {
+        let hex = "0123456789ABCDEF"
+        return "0x" + hex.charAt((address >> 4) & 0x0F) + hex.charAt(address & 0x0F)
+    }
+
+    /**
+     * Scan all standard usable 7-bit I2C addresses and print responding addresses to serial.
+     */
+    //% blockId=i2cAddressRead block="I2C address read"
+    //% subcategory="Sensor"
+    //% group="I2C Tools"
+    //% weight=100
+    //% help=github:acebott/docs/reference
+    export function i2cAddressRead(): void {
+        let found = 0
+        serial.writeLine("I2C scan start")
+
+        // 0x00-0x07 and 0x78-0x7F are reserved I2C addresses.
+        for (let address = 0x08; address <= 0x77; address++) {
+            if (acebottI2cProbe(address)) {
+                serial.writeLine("I2C found: " + acebottI2cAddressText(address))
+                found += 1
+            }
+        }
+
+        if (found == 0) {
+            serial.writeLine("I2C scan: no device")
+        } else {
+            serial.writeLine("I2C scan done")
+        }
+    }
+
     /**
      * Check the STC servo controller at 0x37 and the selected ADC7828 address.
      */
@@ -311,7 +343,6 @@ namespace Acebott {
 
         if (stcReady && adcReady) {
             serial.writeLine("I2C init OK: STC 0x37, ADC7828")
-            basic.showString("I2C OK")
             return true
         }
 
@@ -322,7 +353,6 @@ namespace Acebott {
             serial.writeLine("I2C missing: ADC7828")
         }
         serial.writeLine("I2C init failed")
-        basic.showString("I2C ERR")
         return false
     }
 
