@@ -39,6 +39,27 @@ directly from a micro:bit GPIO pin.
 - LED matrix, TM1650 four-digit display, LCD1602, and 128×64 OLED.
 - Infrared receiver, RC522 RFID, and UART speech-recognition module.
 
+## Micro:bit robotic arm
+
+Initialize the chassis, shoulder, elbow, and claws with four STC controller
+channels (or the supported direct micro:bit servo outputs). Each joint starts at
+90 degrees. The claws are limited to 90–180 degrees; the other joints use
+0–180 degrees.
+
+- `armSetJoint(...)` moves one joint to an angle at a speed from 1 to 100.
+- `armMemory(...)` saves, runs, or deletes up to 20 poses in RAM. Saved poses
+  are cleared when the micro:bit restarts.
+- `armSetPosition(x, y, z)` performs inverse kinematics in centimetres. X is
+  -19–19, Y is 0–19, and Z is 0–27; unreachable positions are ignored and
+  reported over serial.
+- `armGetCoordinate(...)` and `armGetJointAngle(...)` return the current
+  calculated position and joint state.
+- `armSetJoystick(...)` assigns ADC7828 channels to a left or right joystick
+  and starts background control. The left joystick controls chassis/shoulder;
+  the right controls elbow/claws. Short-press the left switch to save a pose,
+  hold it for three seconds to delete poses, and press the right switch to run
+  the saved sequence.
+
 ## Examples
 
 Stop the robot after driving forward for one second:
@@ -65,3 +86,4 @@ basic.showNumber(temperature)
 ```package
 acebott=github:September535/ACEBOTT
 ```
+

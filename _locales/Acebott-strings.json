@@ -243,5 +243,25 @@
     "Acebott.chassisControl|block": "robotic arm chassis|controller %adcChannel|output %outputChannel|step %step",
     "Acebott.shoulderControl|block": "robotic arm shoulder|controller %adcChannel|output %outputChannel|step %step",
     "Acebott.elbowControl|block": "robotic arm elbow|controller %adcChannel|output %outputChannel|step %step",
-    "Acebott.clawsControl|block": "robotic arm claws|controller %adcChannel|output %outputChannel|step %step"
+    "Acebott.clawsControl|block": "robotic arm claws|controller %adcChannel|output %outputChannel|step %step",
+    "Acebott.armInitialize|block": "robotic arm initialize|chassis %chassis|shoulder %shoulder|elbow %elbow|claws %claws",
+    "Acebott.armSetJoint|block": "set robotic arm %joint|angle %angle|speed %speed",
+    "Acebott.armMemory|block": "robotic arm memory %mode",
+    "Acebott.armSetPosition|block": "robotic arm coordinate control|X %x|Y %y|Z %z",
+    "Acebott.armGetCoordinate|block": "get robotic arm coordinate %axis",
+    "Acebott.armGetJointAngle|block": "get robotic arm %joint angle",
+    "Acebott.armSetJoystick|block": "set %side joystick|X %xChannel|Y %yChannel|SW %swChannel",
+    "Acebott.ArmJoint.Chassis|block": "chassis",
+    "Acebott.ArmJoint.Shoulder|block": "shoulder",
+    "Acebott.ArmJoint.Elbow|block": "elbow",
+    "Acebott.ArmJoint.Claws|block": "claws",
+    "Acebott.ArmMemoryMode.Save|block": "save",
+    "Acebott.ArmMemoryMode.Run|block": "run",
+    "Acebott.ArmMemoryMode.Delete|block": "delete",
+    "Acebott.ArmCoordinateAxis.X|block": "X",
+    "Acebott.ArmCoordinateAxis.Y|block": "Y",
+    "Acebott.ArmCoordinateAxis.Z|block": "Z",
+    "Acebott.ArmJoystickSide.Left|block": "left",
+    "Acebott.ArmJoystickSide.Right|block": "right"
 }
+

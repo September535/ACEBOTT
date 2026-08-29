@@ -128,3 +128,30 @@ function testCommunicationApi(): void {
     Acebott.speechRecognitionInit(UartPin.P0)
     let commandMatched = Acebott.speechRecognitionCommand(0)
 }
+
+function testRoboticArmApi(): void {
+    Acebott.armInitialize(
+        Acebott.ArmOutputChannel.STC0,
+        Acebott.ArmOutputChannel.STC1,
+        Acebott.ArmOutputChannel.STC2,
+        Acebott.ArmOutputChannel.STC3
+    )
+    Acebott.armSetJoint(Acebott.ArmJoint.Chassis, 90, 50)
+    Acebott.armMemory(Acebott.ArmMemoryMode.Save)
+    Acebott.armMemory(Acebott.ArmMemoryMode.Run)
+    Acebott.armMemory(Acebott.ArmMemoryMode.Delete)
+    Acebott.armSetPosition(0, 12, 15)
+    let x = Acebott.armGetCoordinate(Acebott.ArmCoordinateAxis.X)
+    let chassis = Acebott.armGetJointAngle(Acebott.ArmJoint.Chassis)
+    Acebott.armSetJoystick(
+        Acebott.ArmJoystickSide.Left,
+        Acebott.Adc7828Channel.CH0,
+        Acebott.Adc7828Channel.CH1,
+        Acebott.Adc7828Channel.CH4
+    )
+}
+
+
+
+
+
