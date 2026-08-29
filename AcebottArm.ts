@@ -279,7 +279,7 @@ namespace Acebott {
     }
 
     /** Initialize the four robotic-arm joint outputs at 90 degrees. */
-    //% blockId=armInitialize block="robotic arm initialize|chassis %chassis|shoulder %shoulder|elbow %elbow|claws %claws"
+    //% blockId=armInitialize block="robotic arm initialize chassis %chassis shoulder %shoulder elbow %elbow claws %claws"
     //% chassis.defl=ArmOutputChannel.STC0
     //% shoulder.defl=ArmOutputChannel.STC1
     //% elbow.defl=ArmOutputChannel.STC2
@@ -430,7 +430,7 @@ namespace Acebott {
     }
 
     /** Configure one ADC7828 joystick and start background arm control. */
-    //% blockId=armSetJoystick block="set %side joystick|X %xChannel|Y %yChannel|SW %swChannel"
+    //% blockId=armSetJoystick block="set %side joystick X %xChannel Y %yChannel SW %swChannel"
     //% xChannel.defl=Adc7828Channel.CH0
     //% yChannel.defl=Adc7828Channel.CH1
     //% swChannel.defl=Adc7828Channel.CH4

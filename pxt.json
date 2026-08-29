@@ -1,41 +1,42 @@
 {
-  "name": "acebott",
-  "version": "0.0.2",
-  "description": "MakeCode extension collection for BBC micro:bit and ACEBOTT hardware modules.",
-  "license": "MIT",
-  "dependencies": {
-    "core": "*"
-  },
-  "files": [
-    "README.md",
-    "docs/reference.md",
-    "docs/testing.md",
-    "Acebott.ts",
-    "AcebottBackground.ts",
-    "AcebottLcd1602.ts",
-    "AcebottAdvanced.ts",
-    "_locales/Acebott-strings.json",
-    "_locales/Acebott-jsdoc-strings.json",
-    "_locales/zh/Acebott-strings.json",
-    "AcebottColor.ts",
-    "AcebottOled.ts",
-    "AcebottServo.ts",
-    "AcebottBMP280.ts",
-    "AcebottADC7828.ts",
-    "AcebottMicrobit.ts",
-    "AcebottSTC.ts",
-    "AcebottArm.ts"
-  ],
-  "testFiles": [
-    "test.ts"
-  ],
-  "public": true,
-  "targetVersions": {
-    "target": "8.0.21",
-    "targetId": "microbit"
-  },
-  "supportedTargets": [
-    "microbit"
-  ],
-  "preferredEditor": "tsprj"
+    "name": "acebott",
+    "version": "0.0.3",
+    "description": "MakeCode extension collection for BBC micro:bit and ACEBOTT hardware modules.",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "README.md",
+        "docs/reference.md",
+        "docs/testing.md",
+        "Acebott.ts",
+        "AcebottBackground.ts",
+        "AcebottLcd1602.ts",
+        "AcebottAdvanced.ts",
+        "_locales/acebott-strings.json",
+        "_locales/acebott-jsdoc-strings.json",
+        "_locales/zh-cn/acebott-strings.json",
+        "AcebottColor.ts",
+        "AcebottOled.ts",
+        "AcebottServo.ts",
+        "AcebottBMP280.ts",
+        "AcebottADC7828.ts",
+        "AcebottMicrobit.ts",
+        "AcebottSTC.ts",
+        "AcebottArm.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "public": true,
+    "targetVersions": {
+        "target": "8.0.21",
+        "targetId": "microbit"
+    },
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "tsprj"
 }
+

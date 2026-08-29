@@ -5,3 +5,4 @@
   "Acebott.dcMotor130Run": "* @param inA  ina eg: AnalogPin.P1",
   "Acebott.dcMotor130Run|param|inB": "inb eg: AnalogPin.P2"
 }
+
