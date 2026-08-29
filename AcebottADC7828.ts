@@ -9,9 +9,10 @@ enum Adc7828I2cAddress {
 }
 
 class AcebottADC7828 {
-    private i2cAddr: number = Adc7828I2cAddress.Address0x48
+    private i2cAddr: number
 
     constructor(addr?: Adc7828I2cAddress) {
+        this.i2cAddr = Adc7828I2cAddress.Address0x48
         if (addr !== undefined) {
             this.i2cAddr = addr
         }
