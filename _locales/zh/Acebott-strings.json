@@ -200,5 +200,25 @@
     "Acebott.chassisControl|block": "机械臂底盘控制|手柄 %adcChannel|输出 %outputChannel|步进 %step",
     "Acebott.shoulderControl|block": "机械臂肩膀控制|手柄 %adcChannel|输出 %outputChannel|步进 %step",
     "Acebott.elbowControl|block": "机械臂手肘控制|手柄 %adcChannel|输出 %outputChannel|步进 %step",
-    "Acebott.clawsControl|block": "机械臂爪子控制|手柄 %adcChannel|输出 %outputChannel|步进 %step"
+    "Acebott.clawsControl|block": "机械臂爪子控制|手柄 %adcChannel|输出 %outputChannel|步进 %step",
+    "Acebott.armInitialize|block": "机械臂初始化|底盘 %chassis|肩部 %shoulder|手肘 %elbow|爪子 %claws",
+    "Acebott.armSetJoint|block": "设置机械臂 %joint|角度 %angle|速度 %speed",
+    "Acebott.armMemory|block": "机械臂记忆模式 %mode",
+    "Acebott.armSetPosition|block": "机械臂坐标控制|X %x|Y %y|Z %z",
+    "Acebott.armGetCoordinate|block": "获取机械臂坐标 %axis",
+    "Acebott.armGetJointAngle|block": "获取机械臂 %joint 角度",
+    "Acebott.armSetJoystick|block": "设置 %side 摇杆|X %xChannel|Y %yChannel|SW %swChannel",
+    "Acebott.ArmJoint.Chassis|block": "底盘",
+    "Acebott.ArmJoint.Shoulder|block": "肩部",
+    "Acebott.ArmJoint.Elbow|block": "手肘",
+    "Acebott.ArmJoint.Claws|block": "爪子",
+    "Acebott.ArmMemoryMode.Save|block": "保存",
+    "Acebott.ArmMemoryMode.Run|block": "运行",
+    "Acebott.ArmMemoryMode.Delete|block": "删除",
+    "Acebott.ArmCoordinateAxis.X|block": "X",
+    "Acebott.ArmCoordinateAxis.Y|block": "Y",
+    "Acebott.ArmCoordinateAxis.Z|block": "Z",
+    "Acebott.ArmJoystickSide.Left|block": "左",
+    "Acebott.ArmJoystickSide.Right|block": "右"
 }
+
