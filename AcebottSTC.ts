@@ -6,7 +6,11 @@
 // The I2C address is the 7-bit address 0x37.
 
 class AcebottSTC {
-    private i2cAddr: number = 0x37
+    private i2cAddr: number
+
+    constructor() {
+        this.i2cAddr = 0x37
+    }
 
     public setServoAngle(channel: number, degree: number): void {
         if (channel < 0 || channel > 5) {
