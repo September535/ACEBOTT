@@ -23,7 +23,8 @@
     "AcebottBMP280.ts",
     "AcebottADC7828.ts",
     "AcebottMicrobit.ts",
-    "AcebottSTC.ts"
+    "AcebottSTC.ts",
+    "AcebottArm.ts"
   ],
   "testFiles": [
     "test.ts"

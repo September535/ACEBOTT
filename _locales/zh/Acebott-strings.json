@@ -184,5 +184,15 @@
     "Adc7828I2cAddress.Address0x4A|block": "0x4A",
     "Adc7828I2cAddress.Address0x4B|block": "0x4B",
     "{id:group}ADC7828 Sensor": "ADC7828传感器",
-    "Acebott.i2cInitCheck|block": "I2C初始化检查|ADC地址 %addr"
+    "Acebott.i2cInitCheck|block": "I2C初始化检查|ADC地址 %addr",
+    "Acebott.armBaseControl|block": "机械臂底盘控制|手柄 %adcChannel|输出 %outputChannel|步进 %step",
+    "Acebott.ArmOutputChannel.STC0|block": "STC通道0",
+    "Acebott.ArmOutputChannel.STC1|block": "STC通道1",
+    "Acebott.ArmOutputChannel.STC2|block": "STC通道2",
+    "Acebott.ArmOutputChannel.STC3|block": "STC通道3",
+    "Acebott.ArmOutputChannel.STC4|block": "STC通道4",
+    "Acebott.ArmOutputChannel.STC5|block": "STC通道5",
+    "Acebott.ArmOutputChannel.MicrobitP2|block": "micro:bit P2",
+    "Acebott.ArmOutputChannel.MicrobitP12|block": "micro:bit P12",
+    "{id:group}Microbit Robotic Arm": "Microbit机械臂"
 }

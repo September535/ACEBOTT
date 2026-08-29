@@ -227,5 +227,15 @@
     "Adc7828I2cAddress.Address0x4A|block": "0x4A",
     "Adc7828I2cAddress.Address0x4B|block": "0x4B",
     "{id:group}ADC7828 Sensor": "ADC7828 Sensor",
-    "Acebott.i2cInitCheck|block": "I2C initialization check|ADC address %addr"
+    "Acebott.i2cInitCheck|block": "I2C initialization check|ADC address %addr",
+    "Acebott.armBaseControl|block": "robotic arm base|controller %adcChannel|output %outputChannel|step %step",
+    "Acebott.ArmOutputChannel.STC0|block": "STC0",
+    "Acebott.ArmOutputChannel.STC1|block": "STC1",
+    "Acebott.ArmOutputChannel.STC2|block": "STC2",
+    "Acebott.ArmOutputChannel.STC3|block": "STC3",
+    "Acebott.ArmOutputChannel.STC4|block": "STC4",
+    "Acebott.ArmOutputChannel.STC5|block": "STC5",
+    "Acebott.ArmOutputChannel.MicrobitP2|block": "P2",
+    "Acebott.ArmOutputChannel.MicrobitP12|block": "P12",
+    "{id:group}Microbit Robotic Arm": "Microbit Robotic Arm"
 }
