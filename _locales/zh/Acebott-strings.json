@@ -183,5 +183,6 @@
     "Adc7828I2cAddress.Address0x49|block": "0x49",
     "Adc7828I2cAddress.Address0x4A|block": "0x4A",
     "Adc7828I2cAddress.Address0x4B|block": "0x4B",
-    "{id:group}ADC7828 Sensor": "ADC7828传感器"
+    "{id:group}ADC7828 Sensor": "ADC7828传感器",
+    "Acebott.i2cInitCheck|block": "I2C初始化检查|ADC地址 %addr"
 }
