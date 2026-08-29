@@ -287,4 +287,43 @@ namespace Acebott {
         initADC7828()
         adc7828.setAddress(addr)
     }
+    function acebottI2cProbe(address: number): boolean {
+        let probe = pins.createBuffer(0)
+        let status = pins.i2cWriteBuffer(address, probe, false)
+        return status == 0
+    }
+
+    /**
+     * Check the STC servo controller at 0x37 and the selected ADC7828 address.
+     */
+
+    //% blockId=i2cInitCheck block="I2C initialization check|ADC address %addr"
+    //% addr.defl=Adc7828I2cAddress.Address0x48
+    //% subcategory="Sensor"
+    //% group="ADC7828 Sensor"
+    //% help=github:acebott/docs/reference
+    export function i2cInitCheck(addr: Adc7828I2cAddress): boolean {
+        initADC7828()
+        adc7828.setAddress(addr)
+
+        let stcReady = acebottI2cProbe(0x37)
+        let adcReady = acebottI2cProbe(addr)
+
+        if (stcReady && adcReady) {
+            serial.writeLine("I2C init OK: STC 0x37, ADC7828")
+            basic.showString("I2C OK")
+            return true
+        }
+
+        if (!stcReady) {
+            serial.writeLine("I2C missing: 0x37")
+        }
+        if (!adcReady) {
+            serial.writeLine("I2C missing: ADC7828")
+        }
+        serial.writeLine("I2C init failed")
+        basic.showString("I2C ERR")
+        return false
+    }
+
 }
