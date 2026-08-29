@@ -45,27 +45,21 @@ namespace Acebott {
         }
     }
 
-    /**
-     * Control the robotic arm base with the ADC7828 joystick.
-     * Put this block inside forever.
-     */
-    //% blockId=armBaseControl block="robotic arm base|controller %adcChannel|output %outputChannel|step %step"
-    //% adcChannel.defl=Adc7828Channel.CH0
-    //% outputChannel.defl=ArmOutputChannel.STC0
-    //% step.min=1 step.max=20 step.defl=1
-    //% group="Microbit Robotic Arm"
-    //% subcategory="Executive"
-    //% weight=100
-    //% help=github:acebott/docs/reference
-    export function armBaseControl(
+    function controlArmJoint(
         adcChannel: Adc7828Channel,
         outputChannel: ArmOutputChannel,
-        step: number
+        step: number,
+        minAngle: number,
+        maxAngle: number,
+        reverse: boolean
     ): void {
         let outputIndex = outputChannel
         if (outputIndex < 0 || outputIndex > 7) {
             return
         }
+
+        minAngle = Math.constrain(minAngle, 0, 180)
+        maxAngle = Math.constrain(maxAngle, minAngle, 180)
 
         let adcValue = adc7828ReadChannel(adcChannel)
         let angle = armOutputAngles[outputIndex]
@@ -78,12 +72,20 @@ namespace Acebott {
         }
 
         if (adcValue > ARM_ADC_HIGH) {
-            angle += step
+            if (reverse) {
+                angle -= step
+            } else {
+                angle += step
+            }
         } else if (adcValue < ARM_ADC_LOW) {
-            angle -= step
+            if (reverse) {
+                angle += step
+            } else {
+                angle -= step
+            }
         }
 
-        angle = Math.constrain(angle, 0, 180)
+        angle = Math.constrain(angle, minAngle, maxAngle)
         armOutputAngles[outputIndex] = angle
 
         if (angle != armOutputLastAngles[outputIndex]) {
@@ -91,4 +93,101 @@ namespace Acebott {
             armOutputLastAngles[outputIndex] = angle
         }
     }
+
+    /**
+     * Control a robotic arm joint with the ADC7828 joystick.
+     * Put this block inside forever.
+     */
+    //% blockId=armBaseControl block="robotic arm joint|controller %adcChannel|output %outputChannel|step %step"
+    //% adcChannel.defl=Adc7828Channel.CH0
+    //% outputChannel.defl=ArmOutputChannel.STC0
+    //% step.min=1 step.max=20 step.defl=1
+    //% group="Microbit Robotic Arm"
+    //% subcategory="Executive"
+    //% weight=90
+    //% help=github:acebott/docs/reference
+    export function armBaseControl(
+        adcChannel: Adc7828Channel,
+        outputChannel: ArmOutputChannel,
+        step: number
+    ): void {
+        controlArmJoint(adcChannel, outputChannel, step, 0, 180, false)
+    }
+
+    /**
+     * Control the robotic arm chassis. Its joystick direction is reversed.
+     */
+    //% blockId=armChassisControl block="robotic arm chassis|controller %adcChannel|output %outputChannel|step %step"
+    //% adcChannel.defl=Adc7828Channel.CH0
+    //% outputChannel.defl=ArmOutputChannel.STC0
+    //% step.min=1 step.max=20 step.defl=1
+    //% group="Microbit Robotic Arm"
+    //% subcategory="Executive"
+    //% weight=100
+    //% help=github:acebott/docs/reference
+    export function chassisControl(
+        adcChannel: Adc7828Channel,
+        outputChannel: ArmOutputChannel,
+        step: number
+    ): void {
+        controlArmJoint(adcChannel, outputChannel, step, 0, 180, true)
+    }
+
+    /**
+     * Control the robotic arm shoulder.
+     */
+    //% blockId=armShoulderControl block="robotic arm shoulder|controller %adcChannel|output %outputChannel|step %step"
+    //% adcChannel.defl=Adc7828Channel.CH1
+    //% outputChannel.defl=ArmOutputChannel.STC1
+    //% step.min=1 step.max=20 step.defl=1
+    //% group="Microbit Robotic Arm"
+    //% subcategory="Executive"
+    //% weight=95
+    //% help=github:acebott/docs/reference
+    export function shoulderControl(
+        adcChannel: Adc7828Channel,
+        outputChannel: ArmOutputChannel,
+        step: number
+    ): void {
+        controlArmJoint(adcChannel, outputChannel, step, 0, 180, false)
+    }
+
+    /**
+     * Control the robotic arm elbow.
+     */
+    //% blockId=armElbowControl block="robotic arm elbow|controller %adcChannel|output %outputChannel|step %step"
+    //% adcChannel.defl=Adc7828Channel.CH2
+    //% outputChannel.defl=ArmOutputChannel.STC2
+    //% step.min=1 step.max=20 step.defl=1
+    //% group="Microbit Robotic Arm"
+    //% subcategory="Executive"
+    //% weight=90
+    //% help=github:acebott/docs/reference
+    export function elbowControl(
+        adcChannel: Adc7828Channel,
+        outputChannel: ArmOutputChannel,
+        step: number
+    ): void {
+        controlArmJoint(adcChannel, outputChannel, step, 0, 180, false)
+    }
+
+    /**
+     * Control the robotic arm claws, limited to 90-180 degrees.
+     */
+    //% blockId=armClawsControl block="robotic arm claws|controller %adcChannel|output %outputChannel|step %step"
+    //% adcChannel.defl=Adc7828Channel.CH3
+    //% outputChannel.defl=ArmOutputChannel.STC3
+    //% step.min=1 step.max=20 step.defl=1
+    //% group="Microbit Robotic Arm"
+    //% subcategory="Executive"
+    //% weight=85
+    //% help=github:acebott/docs/reference
+    export function clawsControl(
+        adcChannel: Adc7828Channel,
+        outputChannel: ArmOutputChannel,
+        step: number
+    ): void {
+        controlArmJoint(adcChannel, outputChannel, step, 90, 180, false)
+    }
+
 }

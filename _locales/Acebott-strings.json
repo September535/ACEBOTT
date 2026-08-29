@@ -228,7 +228,7 @@
     "Adc7828I2cAddress.Address0x4B|block": "0x4B",
     "{id:group}ADC7828 Sensor": "ADC7828 Sensor",
     "Acebott.i2cInitCheck|block": "I2C initialization check|ADC address %addr",
-    "Acebott.armBaseControl|block": "robotic arm base|controller %adcChannel|output %outputChannel|step %step",
+    "Acebott.armBaseControl|block": "robotic arm joint|controller %adcChannel|output %outputChannel|step %step",
     "Acebott.ArmOutputChannel.STC0|block": "STC0",
     "Acebott.ArmOutputChannel.STC1|block": "STC1",
     "Acebott.ArmOutputChannel.STC2|block": "STC2",
@@ -239,5 +239,9 @@
     "Acebott.ArmOutputChannel.MicrobitP12|block": "P12",
     "{id:group}Microbit Robotic Arm": "Microbit Robotic Arm",
     "Acebott.i2cAddressRead|block": "I2C address read",
-    "{id:group}I2C Tools": "I2C Tools"
+    "{id:group}I2C Tools": "I2C Tools",
+    "Acebott.chassisControl|block": "robotic arm chassis|controller %adcChannel|output %outputChannel|step %step",
+    "Acebott.shoulderControl|block": "robotic arm shoulder|controller %adcChannel|output %outputChannel|step %step",
+    "Acebott.elbowControl|block": "robotic arm elbow|controller %adcChannel|output %outputChannel|step %step",
+    "Acebott.clawsControl|block": "robotic arm claws|controller %adcChannel|output %outputChannel|step %step"
 }
