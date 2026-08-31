@@ -70,8 +70,8 @@ namespace Acebott {
     const ARM_SHOULDER_LENGTH = 8.5
     const ARM_ELBOW_LENGTH = 10.9
     const ARM_MAX_MEMORY_STATES = 20
-    const ARM_JOYSTICK_LOW = 50
-    const ARM_JOYSTICK_HIGH = 200
+    const ARM_JOYSTICK_DEAD_ZONE = 30
+    const ARM_JOYSTICK_CALIBRATION_SAMPLES = 20
     const ARM_SWITCH_PRESSED = 50
     const ARM_DEG_TO_RAD = 0.017453292519943295
     const ARM_RAD_TO_DEG = 57.29577951308232
@@ -92,9 +92,13 @@ namespace Acebott {
 
     let armLeftJoystick = [0, 1, 4]
     let armRightJoystick = [2, 3, 5]
+    let armLeftJoystickCenter = [128, 128]
+    let armRightJoystickCenter = [128, 128]
     let armLeftJoystickConfigured = false
     let armRightJoystickConfigured = false
     let armJoystickLoopStarted = false
+    let armJoystickCalibrationStarted = false
+    let armJoystickCalibrating = false
     let armLeftSwitchWasPressed = false
     let armLeftSwitchPressStart = 0
     let armLeftLongPressHandled = false
@@ -204,21 +208,69 @@ namespace Acebott {
         writeArmJoint(joint, armJointAngles[joint] + delta)
     }
 
+    function calibrateArmJoystick(side: ArmJoystickSide): void {
+        armJoystickCalibrating = true
+
+        // Keep both joysticks centred during the initial calibration.
+        if (!armJoystickCalibrationStarted) {
+            basic.pause(500)
+            armJoystickCalibrationStarted = true
+        }
+
+        let channels = armLeftJoystick
+        if (side == ArmJoystickSide.Right) {
+            channels = armRightJoystick
+        }
+
+        let sumX = 0
+        let sumY = 0
+        for (let sample = 0; sample < ARM_JOYSTICK_CALIBRATION_SAMPLES; sample++) {
+            sumX += adc7828ReadChannel(channels[0])
+            sumY += adc7828ReadChannel(channels[1])
+            basic.pause(10)
+        }
+
+        let centerX = Math.idiv(sumX, ARM_JOYSTICK_CALIBRATION_SAMPLES)
+        let centerY = Math.idiv(sumY, ARM_JOYSTICK_CALIBRATION_SAMPLES)
+
+        if (side == ArmJoystickSide.Left) {
+            armLeftJoystickCenter = [centerX, centerY]
+            serial.writeLine("Left joystick center X=" + centerX + " Y=" + centerY)
+        } else {
+            armRightJoystickCenter = [centerX, centerY]
+            serial.writeLine("Right joystick center X=" + centerX + " Y=" + centerY)
+        }
+
+        armJoystickCalibrating = false
+    }
+
     function updateArmJoystick(): void {
+        if (armJoystickCalibrating) {
+            return
+        }
+
         if (armLeftJoystickConfigured) {
             let leftX = adc7828ReadChannel(armLeftJoystick[0])
             let leftY = adc7828ReadChannel(armLeftJoystick[1])
             let leftSwitch = adc7828ReadChannel(armLeftJoystick[2])
+            let leftDeltaX = leftX - armLeftJoystickCenter[0]
+            let leftDeltaY = leftY - armLeftJoystickCenter[1]
+            let leftAbsX = Math.abs(leftDeltaX)
+            let leftAbsY = Math.abs(leftDeltaY)
 
-            if (leftY < ARM_JOYSTICK_LOW) {
-                adjustArmJoint(ArmJoint.Chassis, 1)
-            } else if (leftY > ARM_JOYSTICK_HIGH) {
-                adjustArmJoint(ArmJoint.Chassis, -1)
-            }
-            if (leftX < ARM_JOYSTICK_LOW) {
-                adjustArmJoint(ArmJoint.Shoulder, 1)
-            } else if (leftX > ARM_JOYSTICK_HIGH) {
-                adjustArmJoint(ArmJoint.Shoulder, -1)
+            // One joystick controls only its dominant axis to reject cross-axis drift.
+            if (leftAbsY >= leftAbsX && leftAbsY > ARM_JOYSTICK_DEAD_ZONE) {
+                if (leftDeltaY < 0) {
+                    adjustArmJoint(ArmJoint.Chassis, 1)
+                } else {
+                    adjustArmJoint(ArmJoint.Chassis, -1)
+                }
+            } else if (leftAbsX > ARM_JOYSTICK_DEAD_ZONE) {
+                if (leftDeltaX < 0) {
+                    adjustArmJoint(ArmJoint.Shoulder, 1)
+                } else {
+                    adjustArmJoint(ArmJoint.Shoulder, -1)
+                }
             }
 
             let leftPressed = leftSwitch < ARM_SWITCH_PRESSED
@@ -243,16 +295,23 @@ namespace Acebott {
             let rightX = adc7828ReadChannel(armRightJoystick[0])
             let rightY = adc7828ReadChannel(armRightJoystick[1])
             let rightSwitch = adc7828ReadChannel(armRightJoystick[2])
+            let rightDeltaX = rightX - armRightJoystickCenter[0]
+            let rightDeltaY = rightY - armRightJoystickCenter[1]
+            let rightAbsX = Math.abs(rightDeltaX)
+            let rightAbsY = Math.abs(rightDeltaY)
 
-            if (rightX < ARM_JOYSTICK_LOW) {
-                adjustArmJoint(ArmJoint.Elbow, 1)
-            } else if (rightX > ARM_JOYSTICK_HIGH) {
-                adjustArmJoint(ArmJoint.Elbow, -1)
-            }
-            if (rightY > ARM_JOYSTICK_HIGH) {
-                adjustArmJoint(ArmJoint.Claws, 1)
-            } else if (rightY < ARM_JOYSTICK_LOW) {
-                adjustArmJoint(ArmJoint.Claws, -1)
+            if (rightAbsY >= rightAbsX && rightAbsY > ARM_JOYSTICK_DEAD_ZONE) {
+                if (rightDeltaY > 0) {
+                    adjustArmJoint(ArmJoint.Claws, 1)
+                } else {
+                    adjustArmJoint(ArmJoint.Claws, -1)
+                }
+            } else if (rightAbsX > ARM_JOYSTICK_DEAD_ZONE) {
+                if (rightDeltaX < 0) {
+                    adjustArmJoint(ArmJoint.Elbow, 1)
+                } else {
+                    adjustArmJoint(ArmJoint.Elbow, -1)
+                }
             }
 
             let rightPressed = rightSwitch < ARM_SWITCH_PRESSED
@@ -446,9 +505,11 @@ namespace Acebott {
     ): void {
         if (side == ArmJoystickSide.Left) {
             armLeftJoystick = [xChannel, yChannel, swChannel]
+            calibrateArmJoystick(ArmJoystickSide.Left)
             armLeftJoystickConfigured = true
         } else {
             armRightJoystick = [xChannel, yChannel, swChannel]
+            calibrateArmJoystick(ArmJoystickSide.Right)
             armRightJoystickConfigured = true
         }
         ensureArmJoystickLoop()
