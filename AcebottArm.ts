@@ -110,14 +110,46 @@ namespace Acebott {
         if (joint == ArmJoint.Claws) {
             return Math.constrain(angle, 90, 180)
         } else if (joint == ArmJoint.Elbow) {
-            // Independent elbow limit: measured 122 degrees, with 3-degree margin.
             return Math.constrain(angle, 0, 119)
         }
         return Math.constrain(angle, 0, 180)
     }
 
+    // Measured minimum shoulder angle at each elbow angle.
+    // Boundary points: (Elbow, Shoulder) = (34,0), (62,10),
+    // (90,21), (119,16). No extra margin is applied during testing.
+    function armShoulderMinimumForElbow(elbow: number): number {
+        elbow = Math.constrain(elbow, 0, 119)
+        if (elbow <= 34) {
+            return 0
+        } else if (elbow <= 62) {
+            return (elbow - 34) * 10 / 28
+        } else if (elbow <= 90) {
+            return 10 + (elbow - 62) * 11 / 28
+        }
+        return 21 - (elbow - 90) * 5 / 29
+    }
+
+    function isArmJointPairSafe(shoulder: number, elbow: number): boolean {
+        return shoulder >= armShoulderMinimumForElbow(elbow)
+    }
+
     function writeArmJoint(joint: ArmJoint, angle: number): void {
         angle = constrainArmJointAngle(joint, angle)
+
+        let proposedShoulder = armJointAngles[ArmJoint.Shoulder]
+        let proposedElbow = armJointAngles[ArmJoint.Elbow]
+        if (joint == ArmJoint.Shoulder) {
+            proposedShoulder = angle
+        } else if (joint == ArmJoint.Elbow) {
+            proposedElbow = angle
+        }
+
+        // Stop only the requested joint when the measured boundary is reached.
+        if (!isArmJointPairSafe(proposedShoulder, proposedElbow)) {
+            return
+        }
+
         armJointAngles[joint] = angle
         writeArmOutput(armJointOutputs[joint], angle)
     }
@@ -140,6 +172,11 @@ namespace Acebott {
         claws = constrainArmJointAngle(ArmJoint.Claws, claws)
         speed = Math.constrain(Math.round(speed), 1, 100)
         armLastSpeed = speed
+
+        if (!isArmJointPairSafe(shoulder, elbow)) {
+            serial.writeLine("Arm shoulder/elbow safety limit")
+            return
+        }
 
         let starts = [
             armJointAngles[ArmJoint.Chassis],
