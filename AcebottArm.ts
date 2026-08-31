@@ -244,7 +244,10 @@ namespace Acebott {
     }
 
     function adjustArmJoint(joint: ArmJoint, delta: number): void {
-        writeArmJoint(joint, armJointAn    function updateArmJoystick(): void {
+        writeArmJoint(joint, armJointAngles[joint] + delta)
+    }
+
+    function updateArmJoystick(): void {
         if (armLeftJoystickConfigured) {
             let leftX = adc7828ReadChannel(armLeftJoystick[0])
             let leftY = adc7828ReadChannel(armLeftJoystick[1])
@@ -275,9 +278,6 @@ namespace Acebott {
             } else if (rightY < ARM_JOYSTICK_LOW) {
                 adjustArmJoint(ArmJoint.Claws, -1)
             }
-        }
-    }
-          }
         }
     }
 
