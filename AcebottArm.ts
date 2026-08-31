@@ -280,6 +280,7 @@ namespace Acebott {
 
     /** Initialize the four robotic-arm joint outputs at 90 degrees. */
     //% blockId=armInitialize block="robotic arm initialize chassis %chassis shoulder %shoulder elbow %elbow claws %claws"
+    //% inlineInputMode=inline
     //% chassis.defl=ArmOutputChannel.STC0
     //% shoulder.defl=ArmOutputChannel.STC1
     //% elbow.defl=ArmOutputChannel.STC2
@@ -411,12 +412,13 @@ namespace Acebott {
         let x = radial * Math.sin(chassisRadians)
         let y = radial * Math.cos(chassisRadians)
 
+        // Keep one decimal place (0.1 cm) instead of rounding to integers.
         if (axis == ArmCoordinateAxis.X) {
-            return Math.round(x)
+            return Math.round(x * 10) / 10
         } else if (axis == ArmCoordinateAxis.Y) {
-            return Math.round(y)
+            return Math.round(y * 10) / 10
         }
-        return Math.round(z)
+        return Math.round(z * 10) / 10
     }
 
     /** Get the current angle of one robotic-arm joint. */
@@ -431,6 +433,7 @@ namespace Acebott {
 
     /** Configure one ADC7828 joystick and start background arm control. */
     //% blockId=armSetJoystick block="set %side joystick X %xChannel Y %yChannel SW %swChannel"
+    //% inlineInputMode=inline
     //% xChannel.defl=Adc7828Channel.CH0
     //% yChannel.defl=Adc7828Channel.CH1
     //% swChannel.defl=Adc7828Channel.CH4
