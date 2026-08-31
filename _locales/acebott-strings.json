@@ -262,6 +262,9 @@
     "Acebott.ArmCoordinateAxis.Y|block": "Y",
     "Acebott.ArmCoordinateAxis.Z|block": "Z",
     "Acebott.ArmJoystickSide.Left|block": "left",
-    "Acebott.ArmJoystickSide.Right|block": "right"
+    "Acebott.ArmJoystickSide.Right|block": "right",
+    "Acebott.armReadJoystick|block": "read %side joystick %value value",
+    "Acebott.ArmJoystickValue.X|block": "X",
+    "Acebott.ArmJoystickValue.Y|block": "Y",
+    "Acebott.ArmJoystickValue.SW|block": "SW"
 }
-
