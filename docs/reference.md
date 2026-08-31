@@ -56,10 +56,8 @@ channels (or the supported direct micro:bit servo outputs). Each joint starts at
 - `armGetCoordinate(...)` and `armGetJointAngle(...)` return the current
   calculated position and joint state.
 - `armSetJoystick(...)` assigns 0–255 ADC7828 channels to a left or right
-  joystick and starts background control. Keep both joysticks centred for about
-  one second during setup. Each joystick calibrates its own X/Y centre, uses a
-  ±30 dead zone, and moves only the axis with the larger offset to reject
-  cross-axis drift. A switch value below 50 is pressed. The left joystick controls chassis/shoulder;
+  joystick and starts background control. Values below 50 and above 250 are
+  treated as movement; a switch value below 50 is pressed. The left joystick controls chassis/shoulder;
   the right controls elbow/claws. Short-press the left switch to save a pose,
   hold it for three seconds to delete poses, and press the right switch to run
   the saved sequence.
