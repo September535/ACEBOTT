@@ -66,13 +66,22 @@ namespace Acebott {
         Right = 1
     }
 
+    /** Raw value to read from a configured ADC7828 joystick. */
+    export enum ArmJoystickValue {
+        //% block="X"
+        X = 0,
+        //% block="Y"
+        Y = 1,
+        //% block="SW"
+        SW = 2
+    }
+
     const ARM_BASE_HEIGHT = 10.5
     const ARM_SHOULDER_LENGTH = 8.5
     const ARM_ELBOW_LENGTH = 10.9
     const ARM_MAX_MEMORY_STATES = 20
     const ARM_JOYSTICK_LOW = 50
     const ARM_JOYSTICK_HIGH = 250
-    const ARM_SWITCH_PRESSED = 50
     const ARM_DEG_TO_RAD = 0.017453292519943295
     const ARM_RAD_TO_DEG = 57.29577951308232
 
@@ -95,10 +104,6 @@ namespace Acebott {
     let armLeftJoystickConfigured = false
     let armRightJoystickConfigured = false
     let armJoystickLoopStarted = false
-    let armLeftSwitchWasPressed = false
-    let armLeftSwitchPressStart = 0
-    let armLeftLongPressHandled = false
-    let armRightSwitchWasPressed = false
 
     function constrainArmJointAngle(joint: ArmJoint, angle: number): number {
         angle = Math.round(angle)
@@ -239,14 +244,10 @@ namespace Acebott {
     }
 
     function adjustArmJoint(joint: ArmJoint, delta: number): void {
-        writeArmJoint(joint, armJointAngles[joint] + delta)
-    }
-
-    function updateArmJoystick(): void {
+        writeArmJoint(joint, armJointAn    function updateArmJoystick(): void {
         if (armLeftJoystickConfigured) {
             let leftX = adc7828ReadChannel(armLeftJoystick[0])
             let leftY = adc7828ReadChannel(armLeftJoystick[1])
-            let leftSwitch = adc7828ReadChannel(armLeftJoystick[2])
 
             if (leftY < ARM_JOYSTICK_LOW) {
                 adjustArmJoint(ArmJoint.Chassis, 1)
@@ -258,29 +259,11 @@ namespace Acebott {
             } else if (leftX > ARM_JOYSTICK_HIGH) {
                 adjustArmJoint(ArmJoint.Shoulder, -1)
             }
-
-            let leftPressed = leftSwitch < ARM_SWITCH_PRESSED
-            if (leftPressed && !armLeftSwitchWasPressed) {
-                armLeftSwitchWasPressed = true
-                armLeftSwitchPressStart = input.runningTime()
-                armLeftLongPressHandled = false
-            } else if (leftPressed && !armLeftLongPressHandled &&
-                       input.runningTime() - armLeftSwitchPressStart >= 3000) {
-                deleteArmPoses()
-                armLeftLongPressHandled = true
-            } else if (!leftPressed && armLeftSwitchWasPressed) {
-                if (!armLeftLongPressHandled) {
-                    saveArmPose()
-                }
-                armLeftSwitchWasPressed = false
-                armLeftLongPressHandled = false
-            }
         }
 
         if (armRightJoystickConfigured) {
             let rightX = adc7828ReadChannel(armRightJoystick[0])
             let rightY = adc7828ReadChannel(armRightJoystick[1])
-            let rightSwitch = adc7828ReadChannel(armRightJoystick[2])
 
             if (rightX < ARM_JOYSTICK_LOW) {
                 adjustArmJoint(ArmJoint.Elbow, 1)
@@ -292,14 +275,9 @@ namespace Acebott {
             } else if (rightY < ARM_JOYSTICK_LOW) {
                 adjustArmJoint(ArmJoint.Claws, -1)
             }
-
-            let rightPressed = rightSwitch < ARM_SWITCH_PRESSED
-            if (rightPressed && !armRightSwitchWasPressed) {
-                armRightSwitchWasPressed = true
-                runArmPoses()
-            } else if (!rightPressed) {
-                armRightSwitchWasPressed = false
-            }
+        }
+    }
+          }
         }
     }
 
@@ -493,6 +471,22 @@ namespace Acebott {
             armRightJoystickConfigured = true
         }
         ensureArmJoystickLoop()
+    }
+
+    /** Read the raw X, Y, or SW value from a configured joystick (0-255). */
+    //% blockId=armReadJoystick block="read %side joystick %value value"
+    //% group="Microbit Robotic Arm"
+    //% subcategory="Executive"
+    //% weight=65
+    //% help=github:acebott/docs/reference
+    export function armReadJoystick(
+        side: ArmJoystickSide,
+        value: ArmJoystickValue
+    ): number {
+        if (side == ArmJoystickSide.Left) {
+            return adc7828ReadChannel(armLeftJoystick[value])
+        }
+        return adc7828ReadChannel(armRightJoystick[value])
     }
 
     const ARM_ADC_LOW = 50
