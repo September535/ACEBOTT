@@ -49,13 +49,15 @@ channels (or the supported direct micro:bit servo outputs). Each joint starts at
 - `armSetJoint(...)` moves one joint to an angle at a speed from 1 to 100.
 - `armMemory(...)` saves, runs, or deletes up to 20 poses in RAM. Saved poses
   are cleared when the micro:bit restarts.
-- `armSetPosition(x, y, z)` performs inverse kinematics in centimetres. X is
-  -19–19, Y is 0–19, and Z is 0–27; unreachable positions are ignored and
-  reported over serial.
+- `armSetPosition(x, y, z)` performs inverse kinematics in centimetres using
+  the provisional geometry H=10.5, L1=8.5, and L2=10.9 cm. The conservative
+  limits are X=-10–10, Y=5–16, Z=5–20, and radial reach=7–18 cm. Unreachable
+  positions are ignored and reported over serial.
 - `armGetCoordinate(...)` and `armGetJointAngle(...)` return the current
   calculated position and joint state.
-- `armSetJoystick(...)` assigns ADC7828 channels to a left or right joystick
-  and starts background control. The left joystick controls chassis/shoulder;
+- `armSetJoystick(...)` assigns 0–255 ADC7828 channels to a left or right
+  joystick and starts background control. Values below 50 and above 200 are
+  treated as movement; a switch value below 50 is pressed. The left joystick controls chassis/shoulder;
   the right controls elbow/claws. Short-press the left switch to save a pose,
   hold it for three seconds to delete poses, and press the right switch to run
   the saved sequence.

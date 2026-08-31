@@ -66,13 +66,13 @@ namespace Acebott {
         Right = 1
     }
 
-    const ARM_BASE_HEIGHT = 8
-    const ARM_SHOULDER_LENGTH = 7
-    const ARM_ELBOW_LENGTH = 12
+    const ARM_BASE_HEIGHT = 10.5
+    const ARM_SHOULDER_LENGTH = 8.5
+    const ARM_ELBOW_LENGTH = 10.9
     const ARM_MAX_MEMORY_STATES = 20
-    const ARM_JOYSTICK_LOW = 800
-    const ARM_JOYSTICK_HIGH = 3200
-    const ARM_SWITCH_PRESSED = 800
+    const ARM_JOYSTICK_LOW = 50
+    const ARM_JOYSTICK_HIGH = 200
+    const ARM_SWITCH_PRESSED = 50
     const ARM_DEG_TO_RAD = 0.017453292519943295
     const ARM_RAD_TO_DEG = 57.29577951308232
 
@@ -83,7 +83,7 @@ namespace Acebott {
         ArmOutputChannel.STC3
     ]
     let armJointAngles = [90, 90, 90, 90]
-    let armLastSpeed = 50
+    let armLastSpeed = 10
 
     let armMemoryChassis: number[] = []
     let armMemoryShoulder: number[] = []
@@ -341,15 +341,15 @@ namespace Acebott {
 
     /** Move the robotic arm to an XYZ coordinate in centimeters. */
     //% blockId=armSetPosition block="robotic arm coordinate control|X %x|Y %y|Z %z"
-    //% x.min=-19 x.max=19 x.defl=0
-    //% y.min=0 y.max=19 y.defl=10
-    //% z.min=0 z.max=27 z.defl=10
+    //% x.min=-10 x.max=10 x.defl=0
+    //% y.min=5 y.max=16 y.defl=10
+    //% z.min=5 z.max=20 z.defl=10
     //% group="Microbit Robotic Arm"
     //% subcategory="Executive"
     //% weight=85
     //% help=github:acebott/docs/reference
     export function armSetPosition(x: number, y: number, z: number): void {
-        if (x < -19 || x > 19 || y < 0 || y > 19 || z < 0 || z > 27) {
+        if (x < -10 || x > 10 || y < 5 || y > 16 || z < 5 || z > 20) {
             serial.writeLine("Arm XYZ out of range")
             return
         }
@@ -357,7 +357,7 @@ namespace Acebott {
         let horizontal = Math.sqrt(x * x + y * y)
         let vertical = z - ARM_BASE_HEIGHT
         let distance = Math.sqrt(horizontal * horizontal + vertical * vertical)
-        if (distance < 8 || distance > 19 || (horizontal == 0 && z < 20)) {
+        if (distance < 7 || distance > 18) {
             serial.writeLine("Arm XYZ unreachable")
             return
         }
