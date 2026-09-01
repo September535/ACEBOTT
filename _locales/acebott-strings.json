@@ -266,5 +266,7 @@
     "Acebott.armReadJoystick|block": "read %side joystick %value value",
     "Acebott.ArmJoystickValue.X|block": "X",
     "Acebott.ArmJoystickValue.Y|block": "Y",
-    "Acebott.ArmJoystickValue.SW|block": "SW"
+    "Acebott.ArmJoystickValue.SW|block": "SW",
+    "Acebott.stcI2cCheck|block": "check STC I2C 0x37",
+    "Acebott.adc7828I2cCheck|block": "check ADC7828 I2C address %addr"
 }
