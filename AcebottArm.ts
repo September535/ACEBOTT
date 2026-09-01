@@ -8,21 +8,21 @@ namespace Acebott {
      * P2 and P12 use the micro:bit pins directly.
      */
     export enum ArmOutputChannel {
-        //% block="STC0"
+        //% block="angle0"
         STC0 = 0,
-        //% block="STC1"
+        //% block="angle1"
         STC1 = 1,
-        //% block="STC2"
+        //% block="angle2"
         STC2 = 2,
-        //% block="STC3"
+        //% block="angle3"
         STC3 = 3,
-        //% block="STC4"
+        //% block="angle4"
         STC4 = 4,
-        //% block="STC5"
+        //% block="angle5"
         STC5 = 5,
-        //% block="P2"
+        //% block="angle6"
         MicrobitP2 = 6,
-        //% block="P12"
+        //% block="angle7"
         MicrobitP12 = 7
     }
 
@@ -117,7 +117,7 @@ namespace Acebott {
 
     // Continuous measured shoulder/elbow boundary.
     // Boundary points: (Elbow, Shoulder) = (34,0), (62,10),
-    // (90,20), (105,19), (119,0). No extra margin during testing.
+    // (90,20), (105,19), (119,17). No extra margin during testing.
     function armShoulderMinimumForElbow(elbow: number): number {
         elbow = Math.constrain(elbow, 0, 119)
         if (elbow <= 34) {
@@ -129,7 +129,7 @@ namespace Acebott {
         } else if (elbow <= 105) {
             return 20 - (elbow - 90) / 15
         }
-        return 19 - (elbow - 105) * 19 / 14
+        return 19 - (elbow - 105) * 2 / 14
     }
 
     function isArmJointPairSafe(shoulder: number, elbow: number): boolean {
