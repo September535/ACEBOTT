@@ -115,19 +115,21 @@ namespace Acebott {
         return Math.constrain(angle, 0, 180)
     }
 
-    // Measured low-elbow shoulder boundary.
-    // Boundary points: (Elbow, Shoulder) = (34,0), (62,10), (90,21).
-    // Elbow angles above 90 degrees do not limit the shoulder.
+    // Continuous measured shoulder/elbow boundary.
+    // Boundary points: (Elbow, Shoulder) = (34,0), (62,10),
+    // (90,20), (105,19), (119,0). No extra margin during testing.
     function armShoulderMinimumForElbow(elbow: number): number {
         elbow = Math.constrain(elbow, 0, 119)
-        if (elbow > 90) {
-            return 0
-        } else if (elbow <= 34) {
+        if (elbow <= 34) {
             return 0
         } else if (elbow <= 62) {
             return (elbow - 34) * 10 / 28
+        } else if (elbow <= 90) {
+            return 10 + (elbow - 62) * 10 / 28
+        } else if (elbow <= 105) {
+            return 20 - (elbow - 90) / 15
         }
-        return 10 + (elbow - 62) * 11 / 28
+        return 19 - (elbow - 105) * 19 / 14
     }
 
     function isArmJointPairSafe(shoulder: number, elbow: number): boolean {
