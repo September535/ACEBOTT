@@ -223,5 +223,7 @@
     "Acebott.armReadJoystick|block": "读取 %side 摇杆 %value 值",
     "Acebott.ArmJoystickValue.X|block": "X",
     "Acebott.ArmJoystickValue.Y|block": "Y",
-    "Acebott.ArmJoystickValue.SW|block": "SW"
+    "Acebott.ArmJoystickValue.SW|block": "SW",
+    "Acebott.stcI2cCheck|block": "检测STC I2C 0x37",
+    "Acebott.adc7828I2cCheck|block": "检测ADC7828 I2C地址 %addr"
 }
