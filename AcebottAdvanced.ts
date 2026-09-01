@@ -325,35 +325,41 @@ namespace Acebott {
         }
     }
 
-    /**
-     * Check the STC servo controller at 0x37 and the selected ADC7828 address.
-     */
+    /** Check only the STC servo controller at I2C address 0x37. */
+    //% blockId=stcI2cCheck block="check STC I2C 0x37"
+    //% subcategory="Sensor"
+    //% group="I2C Tools"
+    //% weight=95
+    //% help=github:acebott/docs/reference
+    export function stcI2cCheck(): boolean {
+        return acebottI2cProbe(0x37)
+    }
 
+    /** Check only the selected ADC7828 I2C address. */
+    //% blockId=adc7828I2cCheck block="check ADC7828 I2C address %addr"
+    //% addr.defl=Adc7828I2cAddress.Address0x48
+    //% subcategory="Sensor"
+    //% group="I2C Tools"
+    //% weight=90
+    //% help=github:acebott/docs/reference
+    export function adc7828I2cCheck(addr: Adc7828I2cAddress): boolean {
+        initADC7828()
+        adc7828.setAddress(addr)
+        return acebottI2cProbe(addr)
+    }
+
+    /**
+     * Legacy combined check retained only for existing projects.
+     * It is silent and hidden from the blocks toolbox.
+     */
     //% blockId=i2cInitCheck block="I2C initialization check|ADC address %addr"
+    //% blockHidden=true
     //% addr.defl=Adc7828I2cAddress.Address0x48
     //% subcategory="Sensor"
     //% group="ADC7828 Sensor"
     //% help=github:acebott/docs/reference
     export function i2cInitCheck(addr: Adc7828I2cAddress): boolean {
-        initADC7828()
-        adc7828.setAddress(addr)
-
-        let stcReady = acebottI2cProbe(0x37)
-        let adcReady = acebottI2cProbe(addr)
-
-        if (stcReady && adcReady) {
-            serial.writeLine("I2C init OK: STC 0x37, ADC7828")
-            return true
-        }
-
-        if (!stcReady) {
-            serial.writeLine("I2C missing: 0x37")
-        }
-        if (!adcReady) {
-            serial.writeLine("I2C missing: ADC7828")
-        }
-        serial.writeLine("I2C init failed")
-        return false
+        return stcI2cCheck() && adc7828I2cCheck(addr)
     }
 
 }
