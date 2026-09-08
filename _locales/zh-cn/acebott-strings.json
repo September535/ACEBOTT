@@ -225,5 +225,8 @@
     "Acebott.ArmJoystickValue.Y|block": "Y",
     "Acebott.ArmJoystickValue.SW|block": "SW",
     "Acebott.stcI2cCheck|block": "检测STC I2C 0x37",
-    "Acebott.adc7828I2cCheck|block": "检测ADC7828 I2C地址 %addr"
+    "Acebott.adc7828I2cCheck|block": "检测ADC7828 I2C地址 %addr",
+    "Acebott.armMotorSpeed|block": "（%motor）电机速度设置 %speed（-255~255）",
+    "Acebott.ArmMotor.M1|block": "M1",
+    "Acebott.ArmMotor.M2|block": "M2"
 }
