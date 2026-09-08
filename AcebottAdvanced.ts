@@ -288,7 +288,15 @@ namespace Acebott {
         adc7828.setAddress(addr)
     }
     function acebottI2cProbe(address: number): boolean {
-        let probe = pins.createBuffer(0)
+        // 0x00-0x07 and 0x78-0x7F are reserved 7-bit addresses.
+        if (address < 0x08 || address > 0x77) {
+            return false
+        }
+
+        // An empty buffer does not issue an I2C transaction on some targets.
+        // Send one zero byte so the device must acknowledge its address.
+        let probe = pins.createBuffer(1)
+        probe[0] = 0
         let status = pins.i2cWriteBuffer(address, probe, false)
         return status == 0
     }
@@ -325,27 +333,42 @@ namespace Acebott {
         }
     }
 
-    /** Check only the STC servo controller at I2C address 0x37. */
-    //% blockId=stcI2cCheck block="check STC I2C 0x37"
+    /** Check whether a manually entered 7-bit IIC address acknowledges. */
+    //% blockId=i2cAddressCheck block="check IIC address %address"
+    //% address.min=8 address.max=119 address.defl=0x37
     //% subcategory="Sensor"
     //% group="I2C Tools"
     //% weight=95
     //% help=github:acebott/docs/reference
-    export function stcI2cCheck(): boolean {
-        return acebottI2cProbe(0x37)
+    export function i2cAddressCheck(address: number): boolean {
+        return acebottI2cProbe(Math.round(address))
     }
 
-    /** Check only the selected ADC7828 I2C address. */
+    /**
+     * Legacy STC check retained for existing projects.
+     * It is hidden from the blocks toolbox.
+     */
+    //% blockId=stcI2cCheck block="check STC I2C 0x37"
+    //% blockHidden=true
+    //% subcategory="Sensor"
+    //% group="I2C Tools"
+    //% help=github:acebott/docs/reference
+    export function stcI2cCheck(): boolean {
+        return i2cAddressCheck(0x37)
+    }
+
+    /**
+     * Legacy ADC7828 check retained for existing projects.
+     * It is hidden from the blocks toolbox.
+     */
     //% blockId=adc7828I2cCheck block="check ADC7828 I2C address %addr"
+    //% blockHidden=true
     //% addr.defl=Adc7828I2cAddress.Address0x48
     //% subcategory="Sensor"
     //% group="I2C Tools"
-    //% weight=90
     //% help=github:acebott/docs/reference
     export function adc7828I2cCheck(addr: Adc7828I2cAddress): boolean {
-        initADC7828()
-        adc7828.setAddress(addr)
-        return acebottI2cProbe(addr)
+        return i2cAddressCheck(addr)
     }
 
     /**

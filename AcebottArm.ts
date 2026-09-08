@@ -334,7 +334,7 @@ namespace Acebott {
      * Set the speed and direction of motor M1 or M2.
      * Positive values rotate forward, negative values rotate backward, and 0 stops.
      */
-    //% blockId=armMotorSpeed block="(%motor) motor speed setting %speed (-255~255)"
+    //% blockId=armMotorSpeed block="%motor motor speed setting %speed -255~255"
     //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=2
     //% speed.min=-255 speed.max=255 speed.defl=0
     //% group="Microbit Robotic Arm"
