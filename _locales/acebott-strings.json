@@ -272,5 +272,8 @@
     "Acebott.armMotorSpeed|block": "%motor motor speed setting %speed -255~255",
     "Acebott.ArmMotor.M1|block": "M1",
     "Acebott.ArmMotor.M2|block": "M2",
-    "Acebott.i2cAddressCheck|block": "check IIC address %address"
+    "Acebott.i2cAddressCheck|block": "check IIC address %address",
+    "Acebott.joystickAxis|block": "read joystick axis %axis",
+    "Acebott.JoystickAxis.X|block": "X",
+    "Acebott.JoystickAxis.Y|block": "Y"
 }
