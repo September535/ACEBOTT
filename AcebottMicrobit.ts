@@ -295,6 +295,28 @@ namespace Acebott {
         }
     }
 
+    export enum JoystickAxis {
+        //% block="X"
+        X,
+        //% block="Y"
+        Y
+    }
+
+    /**
+     * Read a joystick axis as a numeric value from 0 to 1023.
+     */
+    //% blockId=joystickAxis block="read joystick axis %axis"
+    //% group="Microbit Controller"
+    //% subcategory="Executive"
+    //% weight=70
+    //% help=github:acebott/docs/reference
+    export function joystickAxis(axis: JoystickAxis): number {
+        if (axis == JoystickAxis.X) {
+            return pins.analogReadPin(AnalogPin.P1)
+        }
+        return pins.analogReadPin(AnalogPin.P2)
+    }
+
     export enum FourKey {
         //% block="up" enumval=0
         Up,
