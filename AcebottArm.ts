@@ -123,7 +123,7 @@ namespace Acebott {
 
     // Continuous measured shoulder/elbow boundary.
     // Boundary points: (Elbow, Shoulder) = (34,0), (62,10),
-    // (90,20), (105,19), (119,17). No extra margin during testing.
+    // (90,42), (105,19), (119,17). No extra margin during testing.
     function armShoulderMinimumForElbow(elbow: number): number {
         elbow = Math.constrain(elbow, 0, 119)
         if (elbow <= 34) {
@@ -131,9 +131,9 @@ namespace Acebott {
         } else if (elbow <= 62) {
             return (elbow - 34) * 10 / 28
         } else if (elbow <= 90) {
-            return 10 + (elbow - 62) * 10 / 28
+            return 10 + (elbow - 62) * 32 / 28
         } else if (elbow <= 105) {
-            return 20 - (elbow - 90) / 15
+            return 42 - (elbow - 90) * 23 / 15
         }
         return 19 - (elbow - 105) * 2 / 14
     }
