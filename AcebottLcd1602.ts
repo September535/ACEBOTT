@@ -109,7 +109,7 @@ namespace Acebott {
 
 
     //% blockId="LCD1602_Showchararacter"
-    //% block="LCD1602 at (x:|%x|,y:|%y) show custom character|%characterindex"
+    //% block="LCD1602 at x:|%x| y:|%y show custom character|%characterindex"
     //% x.min=0 x.max=15
     //% y.min=0 y.max=1
     //% subcategory="Display"
@@ -134,7 +134,7 @@ namespace Acebott {
      * LCD1602 at (x: ,y: ) show string.
      */
 
-    //% blockId="LCD1602_ShowString" block="LCD1602 at (x:|%x|,y:|%y) show string|%s|"
+    //% blockId="LCD1602_ShowString" block="LCD1602 at x:|%x| y:|%y show string|%s|"
     //% x.min=0 x.max=15
     //% y.min=0 y.max=1
     //% s.defl="Hello,Acebott!"
@@ -159,7 +159,7 @@ namespace Acebott {
      * LCD1602 at (x: ,y: ) show number.
      */
 
-    //% blockId="LCD16202_ShowNumber" block="LCD1602 at (x:|%x|,y:|%y) show number|%n|"
+    //% blockId="LCD16202_ShowNumber" block="LCD1602 at x:|%x| y:|%y show number|%n|"
     //% x.min=0 x.max=15
     //% y.min=0 y.max=1
     //% subcategory="Display"
