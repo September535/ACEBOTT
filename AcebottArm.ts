@@ -188,6 +188,17 @@ namespace Acebott {
             return
         }
 
+        // At maximum speed, send only the final target angle. The servo then
+        // moves at its own maximum physical speed instead of being slowed by
+        // one-degree I2C updates.
+        if (speed == 100) {
+            writeArmJoint(ArmJoint.Chassis, chassis)
+            writeArmJoint(ArmJoint.Shoulder, shoulder)
+            writeArmJoint(ArmJoint.Elbow, elbow)
+            writeArmJoint(ArmJoint.Claws, claws)
+            return
+        }
+
         let starts = [
             armJointAngles[ArmJoint.Chassis],
             armJointAngles[ArmJoint.Shoulder],
