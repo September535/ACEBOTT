@@ -115,9 +115,7 @@ namespace Acebott {
 
     function constrainArmJointAngle(joint: ArmJoint, angle: number): number {
         angle = Math.round(angle)
-        if (joint == ArmJoint.Claws) {
-            return Math.constrain(angle, 90, 180)
-        } else if (joint == ArmJoint.Elbow) {
+        if (joint == ArmJoint.Elbow) {
             return Math.constrain(angle, 0, 119)
         }
         return Math.constrain(angle, 0, 180)
@@ -707,7 +705,7 @@ namespace Acebott {
     }
 
     /**
-     * Control the robotic arm claws, limited to 90-180 degrees.
+     * Control the robotic arm claws from 0 to 180 degrees.
      */
     //% blockId=armClawsControl block="robotic arm claws|controller %adcChannel|output %outputChannel|step %step"
     //% blockHidden=true
@@ -723,7 +721,7 @@ namespace Acebott {
         outputChannel: ArmOutputChannel,
         step: number
     ): void {
-        controlArmJoint(adcChannel, outputChannel, step, 90, 180, false)
+        controlArmJoint(adcChannel, outputChannel, step, 0, 180, false)
     }
 
 }
