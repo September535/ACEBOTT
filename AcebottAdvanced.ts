@@ -301,6 +301,36 @@ namespace Acebott {
         return status == 0
     }
 
+    function acebottHexDigitValue(code: number): number {
+        if (code >= 48 && code <= 57) {
+            return code - 48
+        }
+        if (code >= 65 && code <= 70) {
+            return code - 65 + 10
+        }
+        if (code >= 97 && code <= 102) {
+            return code - 97 + 10
+        }
+        return -1
+    }
+
+    function acebottParseI2cHexAddress(text: string): number {
+        if (text.length != 4 || text.charAt(0) != "0") {
+            return -1
+        }
+        let prefix = text.charAt(1)
+        if (prefix != "x" && prefix != "X") {
+            return -1
+        }
+
+        let high = acebottHexDigitValue(text.charCodeAt(2))
+        let low = acebottHexDigitValue(text.charCodeAt(3))
+        if (high < 0 || low < 0) {
+            return -1
+        }
+        return high * 16 + low
+    }
+
     function acebottI2cAddressText(address: number): string {
         let hex = "0123456789ABCDEF"
         return "0x" + hex.charAt((address >> 4) & 0x0F) + hex.charAt(address & 0x0F)
@@ -333,15 +363,15 @@ namespace Acebott {
         }
     }
 
-    /** Check whether a manually entered 7-bit IIC address acknowledges. */
+    /** Check whether a manually entered hexadecimal 7-bit IIC address acknowledges. */
     //% blockId=i2cAddressCheck block="check IIC address %address"
-    //% address.min=8 address.max=119 address.defl=0x37
+    //% address.defl="0x37"
     //% subcategory="Sensor"
     //% group="I2C Tools"
     //% weight=95
     //% help=github:acebott/docs/reference
-    export function i2cAddressCheck(address: number): boolean {
-        return acebottI2cProbe(Math.round(address))
+    export function i2cAddressCheck(address: string): boolean {
+        return acebottI2cProbe(acebottParseI2cHexAddress(address))
     }
 
     /**
@@ -354,7 +384,7 @@ namespace Acebott {
     //% group="I2C Tools"
     //% help=github:acebott/docs/reference
     export function stcI2cCheck(): boolean {
-        return i2cAddressCheck(0x37)
+        return acebottI2cProbe(0x37)
     }
 
     /**
@@ -368,7 +398,7 @@ namespace Acebott {
     //% group="I2C Tools"
     //% help=github:acebott/docs/reference
     export function adc7828I2cCheck(addr: Adc7828I2cAddress): boolean {
-        return i2cAddressCheck(addr)
+        return acebottI2cProbe(addr)
     }
 
     /**
