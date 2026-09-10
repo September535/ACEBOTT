@@ -203,7 +203,7 @@
     "Acebott.clawsControl|block": "机械臂爪子控制|手柄 %adcChannel|输出 %outputChannel|步进 %step",
     "Acebott.armInitialize|block": "机械臂初始化 底盘 %chassis 肩部 %shoulder 手肘 %elbow 爪子 %claws",
     "Acebott.armSetJoint|block": "设置机械臂 %joint|角度 %angle|速度 %speed",
-    "Acebott.armSetOutput|block": "设置 %channel 舵机 角度 %angle 速度 %speed",
+    "Acebott.armSetOutput|block": "设置 %channel 舵机 设置角度 %angle 速度 %speed",
     "Acebott.armMemory|block": "机械臂记忆模式 %mode",
     "Acebott.armSetPosition|block": "机械臂坐标控制|X %x|Y %y|Z %z",
     "Acebott.armGetCoordinate|block": "获取机械臂坐标 %axis",
