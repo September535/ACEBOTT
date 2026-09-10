@@ -343,7 +343,7 @@ namespace Acebott {
      * Set the speed and direction of motor M1 or M2.
      * Positive values rotate forward, negative values rotate backward, and 0 stops.
      */
-    //% blockId=armMotorSpeed block="%motor motor speed setting %speed -255~255"
+    //% blockId=armMotorSpeed block="control motor %motor speed %speed -255~255"
     //% motor.fieldEditor="gridpicker" motor.fieldOptions.columns=2
     //% speed.min=-255 speed.max=255 speed.defl=0
     //% group="Microbit Robotic Arm"
@@ -404,6 +404,51 @@ namespace Acebott {
         ]
         targets[joint] = angle
         moveArmPose(targets[0], targets[1], targets[2], targets[3], speed)
+    }
+
+    /**
+     * Set angle0-angle7 output angle and movement speed.
+     * angle0-angle5 use STC; angle6 and angle7 use micro:bit P2 and P12.
+     */
+    //% blockId=armSetOutput block="set %channel servo angle %angle speed %speed"
+    //% channel.defl=ArmOutputChannel.STC0
+    //% angle.min=0 angle.max=180 angle.defl=90
+    //% speed.min=1 speed.max=100 speed.defl=50
+    //% group="Microbit Robotic Arm"
+    //% subcategory="Executive"
+    //% weight=92
+    //% help=github:acebott/docs/reference
+    export function armSetOutput(
+        channel: ArmOutputChannel,
+        angle: number,
+        speed: number
+    ): void {
+        let outputIndex = channel as number
+        if (outputIndex < 0 || outputIndex > 7) {
+            return
+        }
+
+        angle = Math.constrain(Math.round(angle), 0, 180)
+        speed = Math.constrain(Math.round(speed), 1, 100)
+        let currentAngle = armOutputAngles[outputIndex]
+
+        if (speed == 100 || currentAngle == angle) {
+            writeArmOutput(channel, angle)
+            armOutputAngles[outputIndex] = angle
+            armOutputLastAngles[outputIndex] = angle
+            return
+        }
+
+        let direction = angle > currentAngle ? 1 : -1
+        let delayMs = armStepDelay(speed)
+        while (currentAngle != angle) {
+            currentAngle += direction
+            writeArmOutput(channel, currentAngle)
+            basic.pause(delayMs)
+        }
+
+        armOutputAngles[outputIndex] = angle
+        armOutputLastAngles[outputIndex] = angle
     }
 
     /** Save, run, or delete recorded robotic-arm poses. */
@@ -519,9 +564,9 @@ namespace Acebott {
     //% xChannel.defl=Adc7828Channel.CH0
     //% yChannel.defl=Adc7828Channel.CH1
     //% swChannel.defl=Adc7828Channel.CH4
-    //% group="Microbit Robotic Arm"
-    //% subcategory="Executive"
-    //% weight=70
+    //% group="ADC7828 Sensor"
+    //% subcategory="Sensor"
+    //% weight=90
     //% help=github:acebott/docs/reference
     export function armSetJoystick(
         side: ArmJoystickSide,
@@ -541,9 +586,9 @@ namespace Acebott {
 
     /** Read the raw X, Y, or SW value from a configured joystick (0-255). */
     //% blockId=armReadJoystick block="read %side joystick %value value"
-    //% group="Microbit Robotic Arm"
-    //% subcategory="Executive"
-    //% weight=65
+    //% group="ADC7828 Sensor"
+    //% subcategory="Sensor"
+    //% weight=85
     //% help=github:acebott/docs/reference
     export function armReadJoystick(
         side: ArmJoystickSide,
