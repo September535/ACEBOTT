@@ -423,7 +423,7 @@ namespace Acebott {
         angle: number,
         speed: number
     ): void {
-        let outputIndex = channel as number
+        let outputIndex = channel
         if (outputIndex < 0 || outputIndex > 7) {
             return
         }
