@@ -340,7 +340,7 @@ namespace Acebott {
      * Scan all standard usable 7-bit I2C addresses and print responding addresses to serial.
      */
     //% blockId=i2cAddressRead block="I2C address read"
-    //% subcategory="Sensor"
+    //% subcategory="Display"
     //% group="I2C Tools"
     //% weight=100
     //% help=github:acebott/docs/reference
@@ -366,7 +366,7 @@ namespace Acebott {
     /** Check whether a manually entered hexadecimal 7-bit IIC address acknowledges. */
     //% blockId=i2cAddressCheck block="check IIC address %address"
     //% address.defl="0x37"
-    //% subcategory="Sensor"
+    //% subcategory="Display"
     //% group="I2C Tools"
     //% weight=95
     //% help=github:acebott/docs/reference
