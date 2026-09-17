@@ -162,6 +162,33 @@ namespace Acebott {
         writeArmOutput(armJointOutputs[joint], angle)
     }
 
+    // Validate and update one complete four-joint pose as a single operation.
+    function writeArmPose(
+        chassis: number,
+        shoulder: number,
+        elbow: number,
+        claws: number
+    ): boolean {
+        chassis = constrainArmJointAngle(ArmJoint.Chassis, chassis)
+        shoulder = constrainArmJointAngle(ArmJoint.Shoulder, shoulder)
+        elbow = constrainArmJointAngle(ArmJoint.Elbow, elbow)
+        claws = constrainArmJointAngle(ArmJoint.Claws, claws)
+
+        if (!isArmJointPairSafe(shoulder, elbow)) {
+            return false
+        }
+
+        writeArmOutput(armJointOutputs[ArmJoint.Chassis], chassis)
+        writeArmOutput(armJointOutputs[ArmJoint.Shoulder], shoulder)
+        writeArmOutput(armJointOutputs[ArmJoint.Elbow], elbow)
+        writeArmOutput(armJointOutputs[ArmJoint.Claws], claws)
+        armJointAngles[ArmJoint.Chassis] = chassis
+        armJointAngles[ArmJoint.Shoulder] = shoulder
+        armJointAngles[ArmJoint.Elbow] = elbow
+        armJointAngles[ArmJoint.Claws] = claws
+        return true
+    }
+
     function armStepDelay(speed: number): number {
         speed = Math.constrain(Math.round(speed), 1, 100)
         return Math.idiv(101 - speed, 2) + 1
@@ -190,10 +217,7 @@ namespace Acebott {
         // moves at its own maximum physical speed instead of being slowed by
         // one-degree I2C updates.
         if (speed == 100) {
-            writeArmJoint(ArmJoint.Chassis, chassis)
-            writeArmJoint(ArmJoint.Shoulder, shoulder)
-            writeArmJoint(ArmJoint.Elbow, elbow)
-            writeArmJoint(ArmJoint.Claws, claws)
+            writeArmPose(chassis, shoulder, elbow, claws)
             return
         }
 
@@ -213,19 +237,18 @@ namespace Acebott {
         }
 
         if (maxDelta == 0) {
-            for (let joint = 0; joint < 4; joint++) {
-                writeArmJoint(joint, targets[joint])
-            }
+            writeArmPose(targets[0], targets[1], targets[2], targets[3])
             return
         }
 
         let delayMs = armStepDelay(speed)
         for (let step = 1; step <= maxDelta; step++) {
-            for (let joint = 0; joint < 4; joint++) {
-                let angle = starts[joint] +
-                    (targets[joint] - starts[joint]) * step / maxDelta
-                writeArmJoint(joint, Math.round(angle))
-            }
+            writeArmPose(
+                starts[0] + (targets[0] - starts[0]) * step / maxDelta,
+                starts[1] + (targets[1] - starts[1]) * step / maxDelta,
+                starts[2] + (targets[2] - starts[2]) * step / maxDelta,
+                starts[3] + (targets[3] - starts[3]) * step / maxDelta
+            )
             basic.pause(delayMs)
         }
     }
@@ -404,6 +427,26 @@ namespace Acebott {
         ]
         targets[joint] = angle
         moveArmPose(targets[0], targets[1], targets[2], targets[3], speed)
+    }
+
+    /** Set all four robotic-arm joints in one synchronized pose update. */
+    //% blockId=armSetPose block="set robotic arm pose|chassis %chassis|shoulder %shoulder|elbow %elbow|claws %claws"
+    //% chassis.min=0 chassis.max=180 chassis.defl=90
+    //% shoulder.min=0 shoulder.max=180 shoulder.defl=90
+    //% elbow.min=0 elbow.max=119 elbow.defl=90
+    //% claws.min=0 claws.max=180 claws.defl=90
+    //% inlineInputMode=inline
+    //% group="Microbit Robotic Arm"
+    //% subcategory="Executive"
+    //% weight=94
+    //% help=github:acebott/docs/reference
+    export function armSetPose(
+        chassis: number,
+        shoulder: number,
+        elbow: number,
+        claws: number
+    ): void {
+        writeArmPose(chassis, shoulder, elbow, claws)
     }
 
     /**
