@@ -53,13 +53,25 @@ limited to 0–119 degrees, with an additional shoulder/elbow safety constraint.
   Output labels are `servo0` to `servo7`; channel enum values are unchanged.
 - `armMemory(...)` saves, runs, or deletes up to 20 poses in RAM. Saved poses
   are cleared when the micro:bit restarts.
-- `armSetPosition(x, y, z)` performs inverse kinematics in centimetres using
-  the provisional geometry H=10.5, L1=8.5, and L2=10.9 cm. The conservative
-  limits in the original frame are X=-10–10, Y=5–16, Z=5–20, and radial reach=7–18 cm.
-  After reset, relative XYZ values are translated before these checks. Unreachable
-  positions are ignored and reported over serial.
-- `armGetCoordinate(...)` and `armGetJointAngle(...)` return the current
-  position calculated from cached target angles, without hardware position feedback.
+- `armSetPosition(x, y, z)` uses the supplied IK-v1 conversion and measured
+  corrections directly, with H=8, L1=7, L2=12 cm, ten calibration poses, yaw,
+  ground-reach and Z=2 interpolation. The existing block and three-argument API
+  are retained. The current claw angle is preserved.
+- Before reset, XYZ uses the same base coordinate frame as the serial program.
+  After `armReset()`, XYZ is relative to the modeled home pose. Reinitialize
+  the arm to restore the original frame.
+- Original-frame input checks are X=-19..19, Y=0..19, Z=0..27 cm and shoulder-to-
+  target distance=8..19 cm. Joint limits and every interpolated step are checked
+  before moving; rejected targets do not start motion. Motion follows joint
+  angle interpolation with the serial program's effective 20 ms step interval.
+- `armGetCoordinate(...)` uses recorded XYZ when the cached joint angles match a
+  measured pose; elsewhere it returns a geometric estimate using the same
+  nominal dimensions and zero offsets. It does not measure actual position or
+  exactly invert all empirical corrections. `armGetJointAngle(...)` returns
+  cached target angles.
+- For example, `(0,13,2)` retains C=90, S=32, E=87 from the serial program.
+  `(0,10,10)` computes E=120 and is rejected by the existing 119-degree elbow
+  limit; `(0,10,11)` computes C=90, S=97, E=118 in the model.
 - `armSetJoystick(...)` assigns 0–255 ADC7828 channels to a left or right
   joystick and starts background control. Values below 50 and above 250 are
   treated as movement; a switch value below 50 is pressed. The left joystick controls chassis/shoulder;
