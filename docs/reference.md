@@ -43,18 +43,23 @@ directly from a micro:bit GPIO pin.
 
 Initialize the chassis, shoulder, elbow, and claws with four STC controller
 channels (or the supported direct micro:bit servo outputs). Each joint starts at
-90 degrees. The claws are limited to 90–180 degrees; the other joints use
-0–180 degrees.
+90 degrees. Chassis, shoulder, and claws use 0–180 degrees. The elbow is
+limited to 0–119 degrees, with an additional shoulder/elbow safety constraint.
 
 - `armSetJoint(...)` moves one joint to an angle at a speed from 1 to 100.
+- `armReset()` moves the four configured joints to 90 degrees and makes that
+  pose XYZ=(0,0,0). Subsequent XYZ commands and coordinate reads use this
+  relative origin; `armInitialize(...)` restores the original coordinate frame.
+  Output labels are `servo0` to `servo7`; channel enum values are unchanged.
 - `armMemory(...)` saves, runs, or deletes up to 20 poses in RAM. Saved poses
   are cleared when the micro:bit restarts.
 - `armSetPosition(x, y, z)` performs inverse kinematics in centimetres using
   the provisional geometry H=10.5, L1=8.5, and L2=10.9 cm. The conservative
-  limits are X=-10–10, Y=5–16, Z=5–20, and radial reach=7–18 cm. Unreachable
+  limits in the original frame are X=-10–10, Y=5–16, Z=5–20, and radial reach=7–18 cm.
+  After reset, relative XYZ values are translated before these checks. Unreachable
   positions are ignored and reported over serial.
 - `armGetCoordinate(...)` and `armGetJointAngle(...)` return the current
-  calculated position and joint state.
+  position calculated from cached target angles, without hardware position feedback.
 - `armSetJoystick(...)` assigns 0–255 ADC7828 channels to a left or right
   joystick and starts background control. Values below 50 and above 250 are
   treated as movement; a switch value below 50 is pressed. The left joystick controls chassis/shoulder;

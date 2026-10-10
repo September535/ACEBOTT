@@ -137,6 +137,8 @@ function testRoboticArmApi(): void {
         Acebott.ArmOutputChannel.STC3
     )
     Acebott.armSetJoint(Acebott.ArmJoint.Chassis, 90, 50)
+    Acebott.armReset()
+    Acebott.armSetPosition(0, 0, 0)
     Acebott.armMemory(Acebott.ArmMemoryMode.Save)
     Acebott.armMemory(Acebott.ArmMemoryMode.Run)
     Acebott.armMemory(Acebott.ArmMemoryMode.Delete)
