@@ -43,8 +43,11 @@ directly from a micro:bit GPIO pin.
 
 Initialize the chassis, shoulder, elbow, and claws with four STC controller
 channels (or the supported direct micro:bit servo outputs). Each joint starts at
-90 degrees. Chassis, shoulder, and claws use 0–180 degrees. The elbow is
-limited to 0–120 degrees, with an additional shoulder/elbow safety constraint.
+90 degrees. Chassis and shoulder use 0–180 degrees; claws use 90–180 degrees.
+Claw targets below 90 degrees are clamped to 90, and targets above 180 to 180.
+This applies to joint and pose control, joystick control, and the configured
+claw output used by armSetOutput. The elbow is limited to 0–120 degrees, with
+an additional shoulder/elbow safety constraint.
 
 - `armSetJoint(...)` moves one joint to an angle at a speed from 1 to 100.
 - `armReset()` moves the four configured joints to 90 degrees and makes that

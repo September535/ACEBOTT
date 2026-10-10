@@ -436,7 +436,15 @@ namespace Acebott {
         if (joint == ArmJoint.Elbow) {
             return Math.constrain(angle, 0, 120)
         }
+        if (joint == ArmJoint.Claws) {
+            return Math.constrain(angle, 90, 180)
+        }
         return Math.constrain(angle, 0, 180)
+    }
+
+    function constrainArmOutputAngle(channel: ArmOutputChannel, angle: number): number {
+        let minAngle = channel == armJointOutputs[ArmJoint.Claws] ? 90 : 0
+        return Math.constrain(Math.round(angle), minAngle, 180)
     }
 
     // Measured shoulder minimum for each elbow angle.
@@ -753,7 +761,7 @@ namespace Acebott {
     //% chassis.min=0 chassis.max=180 chassis.defl=90
     //% shoulder.min=0 shoulder.max=180 shoulder.defl=90
     //% elbow.min=0 elbow.max=120 elbow.defl=90
-    //% claws.min=0 claws.max=180 claws.defl=90
+    //% claws.min=90 claws.max=180 claws.defl=90
     //% inlineInputMode=inline
     //% group="Microbit Robotic Arm"
     //% subcategory="Executive"
@@ -812,7 +820,7 @@ namespace Acebott {
             return
         }
 
-        angle = Math.constrain(Math.round(angle), 0, 180)
+        angle = constrainArmOutputAngle(channel, angle)
         speed = Math.constrain(Math.round(speed), 1, 100)
         let currentAngle = armOutputAngles[outputIndex]
 
@@ -862,7 +870,7 @@ namespace Acebott {
     function armXYZCheckPoseLimit(c: number, s: number, e: number, g: number): void {
         armXYZMinimumShoulder = armShoulderMinimumForElbow(e)
         armXYZPoseAllowed = c >= 0 && c <= 180 && s >= 0 && s <= 180 &&
-            e >= 0 && e <= 120 && g >= 0 && g <= 180 &&
+            e >= 0 && e <= 120 && g >= 90 && g <= 180 &&
             isArmJointPairSafe(s, e)
     }
 
@@ -1285,7 +1293,7 @@ namespace Acebott {
     let armOutputLastAngles = [-1, -1, -1, -1, -1, -1, -1, -1]
 
     function writeArmOutput(channel: ArmOutputChannel, angle: number): void {
-        angle = Math.constrain(Math.round(angle), 0, 180)
+        angle = constrainArmOutputAngle(channel, angle)
 
         if (channel <= ArmOutputChannel.STC5) {
             stcServoAngle(channel, angle)
@@ -1344,7 +1352,7 @@ namespace Acebott {
             }
         }
 
-        angle = Math.constrain(angle, minAngle, maxAngle)
+        angle = constrainArmOutputAngle(outputChannel, Math.constrain(angle, minAngle, maxAngle))
         armOutputAngles[outputIndex] = angle
 
         if (angle != armOutputLastAngles[outputIndex]) {
@@ -1435,7 +1443,7 @@ namespace Acebott {
     }
 
     /**
-     * Control the robotic arm claws from 0 to 180 degrees.
+     * Control the robotic arm claws from 90 to 180 degrees.
      */
     //% blockId=armClawsControl block="robotic arm claws|controller %adcChannel|output %outputChannel|step %step"
     //% blockHidden=true
@@ -1451,7 +1459,7 @@ namespace Acebott {
         outputChannel: ArmOutputChannel,
         step: number
     ): void {
-        controlArmJoint(adcChannel, outputChannel, step, 0, 180, false)
+        controlArmJoint(adcChannel, outputChannel, step, 90, 180, false)
     }
 
 }
