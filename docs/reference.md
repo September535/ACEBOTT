@@ -44,7 +44,7 @@ directly from a micro:bit GPIO pin.
 Initialize the chassis, shoulder, elbow, and claws with four STC controller
 channels (or the supported direct micro:bit servo outputs). Each joint starts at
 90 degrees. Chassis, shoulder, and claws use 0–180 degrees. The elbow is
-limited to 0–119 degrees, with an additional shoulder/elbow safety constraint.
+limited to 0–120 degrees, with an additional shoulder/elbow safety constraint.
 
 - `armSetJoint(...)` moves one joint to an angle at a speed from 1 to 100.
 - `armReset()` moves the four configured joints to 90 degrees and makes that
@@ -70,8 +70,9 @@ limited to 0–119 degrees, with an additional shoulder/elbow safety constraint.
   exactly invert all empirical corrections. `armGetJointAngle(...)` returns
   cached target angles.
 - For example, `(0,13,2)` retains C=90, S=32, E=87 from the serial program.
-  `(0,10,10)` computes E=120 and is rejected by the existing 119-degree elbow
-  limit; `(0,10,11)` computes C=90, S=97, E=118 in the model.
+  From the initialized 90-degree pose, `(0,10,10)` computes C=90, S=93, E=120
+  and passes the joint and path checks with the 120-degree elbow limit.
+  `(0,10,11)` computes C=90, S=97, E=118 in the model.
 - `armSetJoystick(...)` assigns 0–255 ADC7828 channels to a left or right
   joystick and starts background control. Values below 50 and above 250 are
   treated as movement; a switch value below 50 is pressed. The left joystick controls chassis/shoulder;

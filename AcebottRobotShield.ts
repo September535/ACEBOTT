@@ -434,7 +434,7 @@ namespace Acebott {
     function constrainArmJointAngle(joint: ArmJoint, angle: number): number {
         angle = Math.round(angle)
         if (joint == ArmJoint.Elbow) {
-            return Math.constrain(angle, 0, 119)
+            return Math.constrain(angle, 0, 120)
         }
         return Math.constrain(angle, 0, 180)
     }
@@ -443,7 +443,7 @@ namespace Acebott {
     // Boundary points: (36,6), (62,18), (90,27), (105,30).
     // Angles outside the measured interval keep the nearest endpoint limit.
     function armShoulderMinimumForElbow(elbow: number): number {
-        elbow = Math.constrain(elbow, 0, 119)
+        elbow = Math.constrain(elbow, 0, 120)
         if (elbow <= 36) {
             return 6
         } else if (elbow <= 62) {
@@ -752,7 +752,7 @@ namespace Acebott {
     //% blockId=armSetPose block="set robotic arm pose|chassis %chassis|shoulder %shoulder|elbow %elbow|claws %claws"
     //% chassis.min=0 chassis.max=180 chassis.defl=90
     //% shoulder.min=0 shoulder.max=180 shoulder.defl=90
-    //% elbow.min=0 elbow.max=119 elbow.defl=90
+    //% elbow.min=0 elbow.max=120 elbow.defl=90
     //% claws.min=0 claws.max=180 claws.defl=90
     //% inlineInputMode=inline
     //% group="Microbit Robotic Arm"
@@ -862,7 +862,7 @@ namespace Acebott {
     function armXYZCheckPoseLimit(c: number, s: number, e: number, g: number): void {
         armXYZMinimumShoulder = armShoulderMinimumForElbow(e)
         armXYZPoseAllowed = c >= 0 && c <= 180 && s >= 0 && s <= 180 &&
-            e >= 0 && e <= 119 && g >= 0 && g <= 180 &&
+            e >= 0 && e <= 120 && g >= 0 && g <= 180 &&
             isArmJointPairSafe(s, e)
     }
 
@@ -1049,7 +1049,7 @@ namespace Acebott {
             }
             serial.writeLine(armXYZConversionMode)
             serial.writeLine("XYZ X=" + x + " Y=" + y + " Z=" + z + " -> C=" + armXYZOutputChassis + " S=" + armXYZOutputShoulder + " E=" + armXYZOutputElbow)
-            if (!(armXYZOutputChassis >= 0 && armXYZOutputChassis <= 180 && armXYZOutputShoulder >= 0 && armXYZOutputShoulder <= 180 && armXYZOutputElbow >= 0 && armXYZOutputElbow <= 119)) {
+            if (!(armXYZOutputChassis >= 0 && armXYZOutputChassis <= 180 && armXYZOutputShoulder >= 0 && armXYZOutputShoulder <= 180 && armXYZOutputElbow >= 0 && armXYZOutputElbow <= 120)) {
                 serial.writeLine("XYZ ANGLE LIMIT")
                 armXYZTransportRunning = false
             }
