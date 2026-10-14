@@ -50,12 +50,20 @@ claw output used by armSetOutput. The elbow is limited to 0–120 degrees, with
 an additional shoulder/elbow safety constraint.
 
 - `armSetJoint(...)` moves one joint to an angle at a speed from 1 to 100.
-- `armReset()` moves the four configured joints to 90 degrees and makes that
+- `armReset()` moves the four configured joints to 90 degrees at the current
+  speed and makes that
   pose XYZ=(0,0,0). Subsequent XYZ commands and coordinate reads use this
   relative origin; `armInitialize(...)` restores the original coordinate frame.
   Output labels are `servo0` to `servo7`; channel enum values are unchanged.
-- `armMemory(...)` saves, runs, or deletes up to 20 poses in RAM. Saved poses
-  are cleared when the micro:bit restarts.
+- `armSetSpeed(...)` selects slow, medium, or fast movement. Set the speed
+  immediately before `armReset()` to select its smooth return speed.
+- `armClaw(...)` opens to 150 degrees or closes to 90 degrees.
+- `armHomePose()` returns all four joints to 90 degrees while preserving the
+  existing XYZ origin. In APP mode it uses the APP action scheduler.
+- `armMemory(...)` saves, runs, or deletes up to 20 poses in RAM. With
+  `armAppPrepare()` and repeated `armAppUpdate()`, the same block also supports
+  three memory groups, recording, loop playback, and stopping. Saved poses are
+  cleared when the micro:bit restarts.
 - `armSetPosition(x, y, z)` uses the supplied IK-v1 conversion and measured
   corrections directly, with H=8, L1=7, L2=12 cm, ten calibration poses, yaw,
   ground-reach and Z=2 interpolation. The existing block and three-argument API

@@ -139,3 +139,19 @@ The documented simulator, compile, and hardware checks are in the
 MIT. See [LICENSE.txt](LICENSE.txt).
 
 for PXT/microbit
+
+## Robotic arm teaching examples
+
+Copy one example into a separate MakeCode project using this extension.
+
+- [Transport with variables and a loop](examples/arm-transport.ts)
+- [APP control](examples/arm-app.ts) — also add the Bluetooth extension;
+  [Chinese integration guide](docs/arm-app.md)
+- [Radio controller sender](examples/arm-radio-sender.ts) and
+  [robotic arm receiver](examples/arm-radio-receiver.ts) — use two micro:bits
+  with radio group 23
+- [Smooth reset test](examples/arm-smooth-reset.ts) — press A to set a pose,
+  then B to set slow speed and return all four joints to 90 degrees
+
+Reset speed uses the existing `armSetSpeed(...)` block. `armReset()` also
+sets the reset pose as the new XYZ origin; `armHomePose()` preserves the origin.

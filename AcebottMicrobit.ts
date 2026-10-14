@@ -281,7 +281,7 @@ namespace Acebott {
     //% group="Microbit Controller"
     //% subcategory="Executive"
     //% help=github:acebott/docs/reference
-    export function joystick(dir: Rocker): number | boolean {
+    export function joystick(dir: Rocker): number {
         switch (dir) {
             case Rocker.X:
                 return pins.analogReadPin(AnalogPin.P1); // 读取摇杆 X 值
@@ -289,9 +289,9 @@ namespace Acebott {
                 return pins.analogReadPin(AnalogPin.P2); // 读取摇杆 Y 值
             case Rocker.Key:
                 pins.setPull(DigitalPin.P8, PinPullMode.PullUp); // 设置按键引脚为上拉模式
-                return pins.digitalReadPin(DigitalPin.P8) === 0; // 读取按键状态，返回布尔值
+                return pins.digitalReadPin(DigitalPin.P8) === 0 ? 1 : 0; // 按下返回 1，松开返回 0
             default:
-                return false; // 如果传入无效的方向，返回 false
+                return 0; // 无效方向返回 0
         }
     }
 
